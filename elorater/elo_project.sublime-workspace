@@ -1,0 +1,616 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Resu",
+				"Results_Closeness"
+			],
+			[
+				"Exper",
+				"Experiment_Closeness"
+			],
+			[
+				"build",
+				"buildRtLayer"
+			],
+			[
+				"per_",
+				"per_inc_layer"
+			],
+			[
+				"case_count",
+				"case_count_20200401"
+			],
+			[
+				"changeMa",
+				"changeMapFunction"
+			],
+			[
+				"per",
+				"per_inc_layer"
+			],
+			[
+				"case",
+				"case_layer"
+			],
+			[
+				"legend",
+				"legend_rt"
+			],
+			[
+				"People",
+				"PeopleSerializer"
+			],
+			[
+				"subject",
+				"subject_name"
+			],
+			[
+				"select",
+				"selectpicker"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "settings.py",
+			"settings":
+			{
+				"buffer_size": 5698,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "custom_azure.py",
+			"settings":
+			{
+				"buffer_size": 1456,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/rater/views.py",
+			"settings":
+			{
+				"buffer_size": 8062,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/rater/models.py",
+			"settings":
+			{
+				"buffer_size": 7968,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/rater/urls.py",
+			"settings":
+			{
+				"buffer_size": 1881,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/rater/serializers.py",
+			"settings":
+			{
+				"buffer_size": 1207,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/frontend/templates/frontend/index.html",
+			"settings":
+			{
+				"buffer_size": 31176,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					32,
+					1,
+					"paste",
+					null,
+					"AgAAAOswAAAAAAAAAzEAAAAAAAAAAAAAAzEAAAAAAAADMQAAAAAAADEAAAByZWxpYWJseSBjb250cmlidXRlIHRvIHRoZSB3ZWxsLWJlaW5nIG9mIHRoZSB1bml0",
+					"AQAAAAAAAAABAAAA6zAAAAAAAAAcMQAAAAAAAAAAAAAAAPC/"
+				],
+				[
+					35,
+					1,
+					"paste",
+					null,
+					"AgAAAAcxAAAAAAAAOzEAAAAAAAAAAAAAOzEAAAAAAAA7MQAAAAAAABwAAAByZWxpYWJseSBtYWtlIGdvb2QgZGVjaXNpb25z",
+					"AQAAAAAAAAABAAAABzEAAAAAAAAjMQAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		},
+		{
+			"file": "/Users/iankloo/working/elo_django/rater/admin.py",
+			"settings":
+			{
+				"buffer_size": 584,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"ter",
+				"Terminus: Open Default Shell in Panel"
+			],
+			[
+				"Terminus",
+				"Terminus: Open Default Shell in Panel"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 136.0,
+		"history":
+		[
+			"ls"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/iankloo/working/elo_django",
+		"/Users/iankloo/working/elo_django/elorater",
+		"/Users/iankloo/working/elo_django/frontend",
+		"/Users/iankloo/working/elo_django/frontend/templates",
+		"/Users/iankloo/working/elo_django/frontend/templates/frontend",
+		"/Users/iankloo/working/elo_django/rater"
+	],
+	"file_history":
+	[
+		"/Users/iankloo/working/elo_django/frontend/templates/frontend/index_summer2020.html",
+		"/Users/iankloo/Documents/amsScraping/ams_get_grades.py",
+		"/Users/iankloo/working/elo_django/rater/admin.py",
+		"/Users/iankloo/working/skope-academic/themes/hugo-academic/layouts/partials/widgets/portfolio.html",
+		"/Users/iankloo/Documents/projects/dscoeDev/dscoe-django/dscoe/settings.py",
+		"/Users/iankloo/working/skope-academic/themes/hugo-academic/layouts/_default/list.html",
+		"/Users/iankloo/working/bigmap/index.html",
+		"/Users/iankloo/working/bigmap/test_out.html",
+		"/Users/iankloo/working/bigmap/jqueryui.min.css",
+		"/Users/iankloo/working/bigmap/moment.min.js",
+		"/Users/iankloo/working/cov_map_working/js_map_dev/moment.js",
+		"/Users/iankloo/working/cov_map/index.html",
+		"/Users/iankloo/working/recipe/rec_site/rec_site/urls.py",
+		"/Users/iankloo/working/recipe/rec_site/recipes/templates/recipes/base.html",
+		"/Users/iankloo/Documents/projects/Elo/django/elorater/settings.py",
+		"/Users/iankloo/working/elo_django/frontend/templates/frontend/index.html",
+		"/Users/iankloo/working/recipe/rec_site/recipes/models.py",
+		"/Users/iankloo/Documents/amsScraping/ams_scrape.py",
+		"/Users/iankloo/Documents/amsScraping/ams_cnums.py",
+		"/Users/iankloo/Documents/projects/django_rest/project/leads/models.py",
+		"/Users/iankloo/Documents/sus_docker/Dockerfile",
+		"/Users/iankloo/Documents/django/rater/admin.py",
+		"/Users/iankloo/OneDrive - West Point/projects/nhl_work/django_dev/nhlwin/frontend/templates/frontend/index.html",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/frontend/models.py",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/rater/views.py",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/frontend/templates/frontend/index.html",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/rater/admin.py",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/rater/models.py",
+		"/Users/iankloo/OneDrive - West Point/projects/Elo/django/elorater/urls.py"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"reliably contribute",
+			"survey_splash",
+			"suvey",
+			"survey_splash",
+			"in the next few",
+			"black",
+			"test"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "settings.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5698,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2175,
+								2175
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "custom_azure.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1456,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								787,
+								787
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/iankloo/working/elo_django/rater/views.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8062,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/iankloo/working/elo_django/rater/models.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7968,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/Users/iankloo/working/elo_django/rater/urls.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1881,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								88,
+								88
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/Users/iankloo/working/elo_django/rater/serializers.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1207,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								178,
+								178
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/Users/iankloo/working/elo_django/frontend/templates/frontend/index.html",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 31176,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12723,
+								12723
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6990.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/Users/iankloo/working/elo_django/rater/admin.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 584,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.Terminus":
+	{
+		"height": 228.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "elo_project.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 221.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
