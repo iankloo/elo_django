@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xvvq5h4_t#775&d5v(v=+&vgq4j4yri)mayci3nia%!^2%0!3s'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,13 +80,13 @@ WSGI_APPLICATION = 'elorater.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-#local
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+local
+ DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+     }
+ }
 
 #dev
 # DATABASES = {
@@ -103,22 +103,6 @@ WSGI_APPLICATION = 'elorater.wsgi.application'
 #          }
 #      }
 #  }
-
-#production
-DATABASES = {
-     'default': {
-         'ENGINE': 'sql_server.pyodbc',
-         'NAME': 'sqldbdseelo',
-         'USER': 'sqldseeloadmin',
-         'PASSWORD': '642$GY%Tla8K',
-         'HOST': 'tcp:sqldseelo.database.windows.net',
-         'PORT': '1433',
-         'OPTIONS': {
-             'driver': 'ODBC Driver 17 for SQL Server',
-             'MARS_Connection': 'True',
-         }
-     }
- }
 
 
 # Password validation
