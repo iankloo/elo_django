@@ -169,6 +169,18 @@ h5{
   } 
 }
 
+.navbar-right{
+  position: fixed;
+  top: 15px;
+  right: 50px;/*pixels away from the right of the navbar*/
+  color: #fff;
+}
+
+.navbar-right:hover{
+  color: #fff;
+  font-weight:bold;
+  text-decoration: none !important;
+}
 
 
 
@@ -203,7 +215,8 @@ h5{
   
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" href="">Elo Peer Rater</a>
+    <a class="navbar-brand" href="/">Elo Peer Rater</a>
+    <a class="navbar-item navbar-right" href="?code=creator">Admin</a>
   </nav>
 
   <div class = 'main'></div>
@@ -218,6 +231,8 @@ h5{
   var code = urlParams.get('code')
   if(code == null){
     splash_page();
+  } else if(code == 'creator'){
+    admin_splash();
   } else{
 
     $.ajax({
@@ -243,6 +258,40 @@ h5{
   //console.log(urlParams.get('code'))
 
   //splash_page();
+
+
+  //admin page
+  function admin_splash(){
+    $('.main').html(`
+      <div class = 'content'>
+        <h2>Admin Login</h2>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" id="admin_id" placeholder="Username">
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" id="password" placeholder="Password">
+          <div class="input-group-append">
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <button id = "login_btn" onclick = "return false;" class="btn btn-secondary" type="button" style='width:100%;'>Log in</button>
+        </div>
+
+        <div class="alert alert-danger" id = "alert-badpass" role="alert">
+          Invalid username or password.
+        </div>
+
+      </div>
+    `)
+    $('#alert-badpass').hide()
+  }
+
+
+
+
+
+
 
   //main page that asks for access code
   function splash_page(){
