@@ -25,8 +25,18 @@ class Experiment(models.Model):
 	def __str__(self):
 		return self.title + " - " + str(self.date)
 
-
 ranks = (
+	('PVT','PVT'),
+	('PV2','PV2'),
+	('PFC','PFC'),
+	('SPC','SPC'),
+	('CPL','CPL'),
+	('SGT','SGT'),
+	('SSG','SSG'),
+	('SFT','SFT'),
+	('MSG','MSG'),
+	('1SG','1SG'),
+	('SGM','SGM'),
 	('Cadet','Cadet'),
 	('2LT', '2LT'),
 	('1LT', '1LT'),
@@ -37,7 +47,7 @@ ranks = (
 	('BG', 'BG'),
 	('MG', 'MG'),
 	('LTG', 'LTG'),
-	('CIV', 'CIV')	
+	('CIV', 'CIV')
 )
 
 class People(models.Model):
@@ -45,7 +55,7 @@ class People(models.Model):
 	middle = models.CharField(max_length = 60, null = True, blank = True, default = '')
 	last = models.CharField(max_length = 60)
 	rank = models.CharField(choices = ranks, max_length = 5)
-	email = models.CharField(max_length = 60, null = True, blank = True)
+	email = models.CharField(max_length = 60, null = True, blank = True, unique = True)
 
 	def __str__(self):
 		if(self.rank == 'CIV'):
@@ -56,6 +66,7 @@ class People(models.Model):
 
 	class Meta:
 		verbose_name_plural = "people"
+		unique_together = ['first','middle','last','rank','email']
 
 
 
@@ -77,7 +88,7 @@ class Results(models.Model):
 		else:
 			return str(self.rater) + ": " + str(self.name_1) + " vs " + str(self.name_2)
 
-	class Meta: 
+	class Meta:
 		verbose_name_plural = "results"
 
 
@@ -120,7 +131,7 @@ def build_pairwise_shell(sender, **kwargs):
 
 				print(type(t[0]))
 				obj.save()
-	
+
 	#pk_set = kwargs.pop('pk_set', None)
 	#action = kwargs.pop('action', None)
 	#print(pk_set)
@@ -166,7 +177,7 @@ class Comments(models.Model):
 	does = models.TextField(max_length = 10, null = True, blank = True)
 	virtue = models.TextField(max_length = 500, null = True, blank = True)
 
-	class Meta: 
+	class Meta:
 			verbose_name_plural = "comments"
 
 class Comments_Constructive(models.Model):
@@ -175,7 +186,7 @@ class Comments_Constructive(models.Model):
 	subject_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='subject_name_const')
 	comment = models.TextField(max_length = 500)
 
-	class Meta: 
+	class Meta:
 			verbose_name_plural = "comments_constructive"
 
 
@@ -210,7 +221,7 @@ class Results_Closeness(models.Model):
 		else:
 			return str(self.rater) + ": " + str(self.name)
 
-	class Meta: 
+	class Meta:
 		verbose_name_plural = "results_closeness"
 
 
@@ -278,8 +289,3 @@ def build_pairwise_shell_closeness(sender, **kwargs):
 
 			#print(type(t[0]))
 			obj.save()
-
-
-
-
-

@@ -1,7 +1,13 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Experiment, Results, People, Results_Closeness, Experiment_Closeness
+from django.contrib.auth import get_user_model
 
+
+class NewUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -51,5 +57,3 @@ class Results_ClosenessSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Results_Closeness
 		fields = '__all__'
-
-

@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from .serializers import ExperimentSerializer, ResultsSerializer, PeopleSerializer, Results_ClosenessSerializer, ExperimentClosenessSerializer
+from .serializers import ExperimentSerializer, ResultsSerializer, PeopleSerializer, Results_ClosenessSerializer, ExperimentClosenessSerializer, NewUserSerializer
 from .models import Experiment, Results, People, Comments, Results_Closeness, Experiment_Closeness, Comments_Constructive
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -8,6 +8,97 @@ from datetime import datetime
 from django.utils import timezone
 from itertools import chain
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveAPIView
+
+class UserAPIView(RetrieveAPIView):
+	permission_classes = (IsAuthenticated,)
+	serializer_class = NewUserSerializer
+
+	def get_object(self):
+		return self.request.user
+
+
+
+
+#restrict permissions later
+@permission_classes((permissions.AllowAny,))
+class delete_people_internal(APIView):
+	def post(self, request, version):
+		People.objects.get(id = request.data['id']).delete()
+
+		return Response(status = 200)
+
+
+#restrict permissions later
+@permission_classes((permissions.AllowAny,))
+class add_people_internal(APIView):
+
+	def post(self, request, version):
+		#this signifies an edit
+		if request.data['id'] != '':
+			print(request.data)
+			first = request.data['first']
+			if(request.data['middle']):
+				middle = request.data['middle']
+			else:
+				middle = ''
+			last = request.data['last']
+			rank = request.data['rank']
+			email = request.data['email']
+			id = request.data['id']
+
+			if first == '' or last == '' or email == '':
+				return Response(status = 201)
+			else:
+				p = People.objects.get(id = id)
+				p.first = first
+				p.middle = middle
+				p.last = last
+				p.rank = rank
+				p.email = email
+
+				p.save()
+
+				return Response(status = 200)
+		#this creates a new user
+		else:
+			first = request.data['first']
+			if(request.data['middle']):
+				middle = request.data['middle']
+			else:
+				middle = ''
+			last = request.data['last']
+			rank = request.data['rank']
+			email = request.data['email']
+
+			if first == '' or last == '' or email == '':
+				return Response(status = 201)
+			else:
+				p = People()
+				p.first = first
+				p.middle = middle
+				p.last = last
+				p.rank = rank
+				p.email = email
+
+				p.save()
+
+				return Response(status = 200)
+
+#restrict permissions later
+@permission_classes((permissions.AllowAny,))
+class PeopleInternalView(generics.ListAPIView):
+	permission_classes = (IsAuthenticated,)
+
+	serializer_class = PeopleSerializer
+
+	def get_queryset(self):
+		queryset = People.objects.all()
+
+		return queryset
+
+
+
 
 
 
@@ -248,7 +339,7 @@ class add_exp_external(APIView):
 		for p in people:
 			ex.names.add(p)
 
-		
+
 
 		ex.save()
 

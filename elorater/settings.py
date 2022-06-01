@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'frontend',
     'django_extensions',
     'surveyor',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -127,8 +128,8 @@ USE_TZ = True
 
 #local
 STATIC_URL = '/static/'
-PROJECT_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__))) 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')   
+PROJECT_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
 STATIC_URL = '/static/'
 
 
@@ -141,7 +142,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
-
