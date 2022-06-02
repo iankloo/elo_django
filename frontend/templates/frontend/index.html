@@ -233,7 +233,7 @@ h5{
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <a class="navbar-brand" href="/">Elo Peer Rater</a>
-    <a class="navbar-item navbar-right" href="?code=creator">Admin Login</a>
+    <a class="navbar-item navbar-right" id="login_toggle" href="?code=creator">Admin Login</a>
   </nav>
 
   <div class = 'main'></div>
@@ -279,80 +279,85 @@ h5{
 
   //admin page
   function admin_splash(){
-    //0. need to be able to check user token against server -- done
-    //1. check token against server here to determine whether or not to go to login page or straight to user_view()
-    //2. add token auth to all of the requests to get/add/edit/delete people
-    //
-    // $.ajax({
-    //   url: 'api/user/',
-    //   type: "GET",
-    //   beforeSend: function(xhr){
-    //     if(localStorage.token){
-    //       xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-    //     }
-    //   },
-    //   success: function(data){
-    //     user_view()
-    //   }.
-    //   error: function(){
-    //
-    //   }
-    // )}
+    $.ajax({
+      url: 'api/user/',
+      type: "GET",
+      beforeSend: function(xhr){
+        if(localStorage.token){
+          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+        }
+      },
 
+      success: function (data){
+        $("#login_toggle").remove()
+        $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href=''>Logout</a>")
 
-    $('.main').html(`
-      <div class = 'content'>
-        <h2>Admin Login</h2>
-
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" id="admin_id" placeholder="Username">
-        </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" id="password" placeholder="Password">
-          <div class="input-group-append">
-          </div>
-        </div>
-        <div class="input-group mb-3">
-          <button id = "login_btn" onclick = "return false;" class="btn btn-secondary" type="button" style='width:100%;'>Log in</button>
-        </div>
-
-        <div class="alert alert-danger" id = "alert-badpass" role="alert">
-          Invalid username or password.
-        </div>
-
-      </div>
-    `)
-    $('#alert-badpass').hide()
-
-    if(authenticated == true){
-      //add_user_form()
-      user_view()
-    } else{
-      $("#login_btn").click(function() {
-        var user = $("#admin_id").val()
-        var password = $("#password").val()
-
-        $.ajax({
-          url: 'api/token/',
-          type: "POST",
-          data: {username:user, password:password},
-
-          success: function (data){
-            access_token = data.access
-            refresh_token = data.refresh
-
-            //add_user_form()
-
-            //this isn't a safe way to authenticate the user
-
-            user_view()
-          },
-          error: function (data){
-            $('#alert-badpass').show()
-          }
+        $("#logout").click(function(){
+          localStorage.removeItem('token')
         })
-      })
-    }
+
+        user_view()
+      },
+      error: function (data){
+        $('.main').html(`
+          <div class = 'content'>
+            <h2>Admin Login</h2>
+
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" id="admin_id" placeholder="Username">
+            </div>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" id="password" placeholder="Password">
+              <div class="input-group-append">
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <button id = "login_btn" class="btn btn-secondary" type="submit" style='width:100%;'>Log in</button>
+            </div>
+
+            <div class="alert alert-danger" id = "alert-badpass" role="alert">
+              Invalid username or password.
+            </div>
+
+          </div>
+        `)
+        $('#alert-badpass').hide()
+        $('input').on('keypress', (event)=> {
+            if(event.which === 13){
+                $('#login_btn').click();
+            }
+        });
+
+        $("#login_btn").click(function() {
+          var user = $("#admin_id").val()
+          var password = $("#password").val()
+
+          $.ajax({
+            url: 'api/token/',
+            type: "POST",
+            data: {username:user, password:password},
+
+            success: function (data){
+              access_token = data.access
+              refresh_token = data.refresh
+
+              localStorage.token = data.access
+              $("#login_toggle").remove()
+              $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href=''>Logout</a>")
+
+              $("#logout").click(function(){
+                localStorage.removeItem('token')
+              })
+
+              user_view()
+            },
+            error: function (data){
+              $('#alert-badpass').show()
+            }
+          })
+        })
+      }
+    })
   }
 
   function user_view(){
@@ -417,15 +422,15 @@ h5{
               <form>
                 <div class="form-group col-md-12 required">
                   <label class = 'control-label' for="first_name">First Name</label>
-                  <input type="text" class="form-control" id="first_name" placeholder="First Name" required = 'required'>
+                  <input type="text" class="form-control" id="first_name" placeholder="" required = 'required'>
                 </div>
                 <div class="form-group col-md-12">
                   <label for="middle_name">Middle Name</label>
-                  <input type="text" class="form-control" id="middle_name" placeholder="Middle Name">
+                  <input type="text" class="form-control" id="middle_name" placeholder="">
                 </div>
                 <div class="form-group col-md-12 required">
                   <label class = 'control-label' for="last_name">Last Name</label>
-                  <input type="text" class="form-control" id="last_name" placeholder="Last Name">
+                  <input type="text" class="form-control" id="last_name" placeholder="">
                 </div>
                 <div class="form-group col-md-12 required">
                   <label class = 'control-label' for="rank_select">Rank</label>
@@ -451,7 +456,7 @@ h5{
                 </div>
                 <div class="form-group col-md-12 required">
                   <label class = 'control-label' for="email">Email address</label>
-                  <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email">
+                  <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="">
                 </div>
                 <input type="text" class="form-control" id="id" placeholder="id">
                 <div class="form-group col-md-12">
@@ -472,6 +477,12 @@ h5{
 
 
     `)
+
+    $('input').on('keypress', (event)=> {
+        if(event.which === 13){
+            $('#add_user').click();
+        }
+    });
 
     $('#id').hide()
 
@@ -509,6 +520,11 @@ h5{
         url: 'api/v1/add_people_internal/',
         type: "POST",
         data: {first:first, middle:middle, last:last, rank:rank, email:email, id:id},
+        beforeSend: function(xhr){
+          if(localStorage.token){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+          }
+        },
 
         success: function (data, textStatus, xhr){
           if(xhr.status == 201){
@@ -535,6 +551,11 @@ h5{
               url: 'api/v1/people_internal/',
               type: "GET",
               dataType: "json",
+              beforeSend: function(xhr){
+                if(localStorage.token){
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                }
+              },
 
               success: function (data){
                 t.clear()
@@ -562,8 +583,11 @@ h5{
                     url: 'api/v1/delete_people_internal/',
                     type: "POST",
                     data: {id:id},
-                    beforeSend:function(){
-                       return confirm("Are you sure you want to delete this user?");
+                    beforeSend:function(xhr){
+                      if(localStorage.token){
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                      }
+                      return confirm("Are you sure you want to delete this user?");
                     },
 
 
@@ -573,6 +597,11 @@ h5{
                         url: 'api/v1/people_internal/',
                         type: "GET",
                         dataType: "json",
+                        beforeSend: function(xhr){
+                          if(localStorage.token){
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                          }
+                        },
 
                         success: function (data){
                           t.clear()
@@ -600,8 +629,11 @@ h5{
                               url: 'api/v1/delete_people_internal/',
                               type: "POST",
                               data: {id:id},
-                              beforeSend:function(){
-                                 return confirm("Are you sure you want to delete this user?");
+                              beforeSend:function(xhr){
+                                if(localStorage.token){
+                                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                                }
+                                return confirm("Are you sure you want to delete this user?");
                               },
 
 
@@ -625,14 +657,26 @@ h5{
                                   $('#id').val(data[$(this).attr('data')].id)
 
                                 })
+                              },
+                              error: function(){
+                                admin_splash()
                               }
                             })
                           })
+                        },
+                        error: function(){
+                          admin_splash()
                         }
                       })
+                    },
+                    error: function(){
+                      admin_splash()
                     }
                   })
                 })
+              },
+              error: function(){
+                admin_splash()
               }
             })
           }
@@ -653,6 +697,11 @@ h5{
       url: 'api/v1/people_internal/',
       type: "GET",
       dataType: "json",
+      beforeSend: function(xhr){
+        if(localStorage.token){
+          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+        }
+      },
 
       success: function (data){
         for(var i = 0; i < data.length; i++){
@@ -678,8 +727,11 @@ h5{
             url: 'api/v1/delete_people_internal/',
             type: "POST",
             data: {id:id},
-            beforeSend:function(){
-               return confirm("Are you sure you want to delete this user?");
+            beforeSend:function(xhr){
+              if(localStorage.token){
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+              }
+              return confirm("Are you sure you want to delete this user?");
             },
 
 
@@ -689,6 +741,11 @@ h5{
                 url: 'api/v1/people_internal/',
                 type: "GET",
                 dataType: "json",
+                beforeSend: function(xhr){
+                  if(localStorage.token){
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                  }
+                },
 
                 success: function (data){
                   t.clear()
@@ -716,8 +773,11 @@ h5{
                       url: 'api/v1/delete_people_internal/',
                       type: "POST",
                       data: {id:id},
-                      beforeSend:function(){
-                         return confirm("Are you sure you want to delete this user?");
+                      beforeSend:function(xhr){
+                        if(localStorage.token){
+                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                        }
+                        return confirm("Are you sure you want to delete this user?");
                       },
 
 
@@ -741,14 +801,26 @@ h5{
                           $('#id').val(data[$(this).attr('data')].id)
 
                         })
+                      },
+                      error: function(){
+                        admin_splash()
                       }
                     })
                   })
+                },
+                error: function(){
+                  admin_splash()
                 }
               })
+            },
+            error: function(){
+              admin_splash()
             }
           })
         })
+      },
+      error: function(){
+        admin_splash()
       }
     })
 

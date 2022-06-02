@@ -18,11 +18,10 @@ class UserAPIView(RetrieveAPIView):
 		return self.request.user
 
 
-
-
 #restrict permissions later
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((permissions.AllowAny,))
 class delete_people_internal(APIView):
+	permission_classes = (IsAuthenticated,)
 	def post(self, request, version):
 		People.objects.get(id = request.data['id']).delete()
 
@@ -30,8 +29,9 @@ class delete_people_internal(APIView):
 
 
 #restrict permissions later
-@permission_classes((permissions.AllowAny,))
+#@permission_classes((permissions.AllowAny,))
 class add_people_internal(APIView):
+	permission_classes = (IsAuthenticated,)
 
 	def post(self, request, version):
 		#this signifies an edit
@@ -86,10 +86,8 @@ class add_people_internal(APIView):
 				return Response(status = 200)
 
 #restrict permissions later
-@permission_classes((permissions.AllowAny,))
 class PeopleInternalView(generics.ListAPIView):
 	permission_classes = (IsAuthenticated,)
-
 	serializer_class = PeopleSerializer
 
 	def get_queryset(self):
