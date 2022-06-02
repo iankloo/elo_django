@@ -195,6 +195,37 @@ h5{
   text-align: center !important;
 }
 
+.btn-sm {
+  height: 2.35em;
+  font-size: .65rem !important;
+  text-align: center !important;
+}
+
+
+.dataTables_wrapper { font-size: .9em }
+
+.dataTables_paginate>span>a {
+    margin-bottom: 0px !important;
+    padding: 1px 5px !important;
+}
+
+.dataTables_paginate>a {
+    margin-bottom: 0px !important;
+    padding: 1px 5px !important;
+}
+
+#exp_modal>.modal-dialog {
+  max-width: 750px;
+}
+
+.search-input{
+  width: 100%;
+}
+
+.custom-header{
+  background: #6f757b;
+  color: #fff;
+}
 
   </style>
 
@@ -228,6 +259,16 @@ h5{
 <!--data.table-->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+
+<!--icons-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+
+
+<!--multiselect-->
+<link rel="stylesheet" href="{% static 'frontend/css/multi-select.css' %}"/>
+<script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.multi-select.js' %}"></script>
+<script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.quicksearch.js' %}"></script>
 
 
 
@@ -267,9 +308,6 @@ h5{
         pre_survey(code, ex_type)
       }
     })
-
-
-
   }
 
   //console.log(urlParams.get('code'))
@@ -291,12 +329,21 @@ h5{
       success: function (data){
         $("#login_toggle").remove()
         $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href=''>Logout</a>")
-
+        $(".navbar").append('<a class="nav-link navbar-brand" id="user_manager" href="?code=creator" style="font-size:1rem;padding-left: 30px">User Manager</a>')
+        $(".navbar").append('<a class="nav-link navbar-brand" id="exp_manager" href="?code=creator" style="font-size:1rem;padding-left: 0px">Experiment Manager</a>')
+        $(".navbar").append('<a class="nav-link navbar-brand" id="prog_tracker" href="?code=creator" style="font-size:1rem;padding-left: 0px">Progress Tracker</a>')
+        $(".navbar").append('<a class="nav-link navbar-brand" id="results_manager" href="?code=creator" style="font-size:1rem;padding-left: 0px">Results</a>')
         $("#logout").click(function(){
           localStorage.removeItem('token')
         })
 
-        user_view()
+        //listen for button presses in header -- need smarter way to do this, isn't working because everything routes back through splash again
+        $("#user_manager").click(function(){
+          user_view()
+        })
+
+        //user_view()
+        experiment_view()
       },
       error: function (data){
         $('.main').html(`
@@ -344,12 +391,21 @@ h5{
               localStorage.token = data.access
               $("#login_toggle").remove()
               $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href=''>Logout</a>")
-
+              $(".navbar").append('<a class="nav-link navbar-brand" id="user_manager" href="?code=creator" style="font-size:1rem;padding-left: 30px">User Manager</a>')
+              $(".navbar").append('<a class="nav-link navbar-brand" id="exp_manager" href="?code=creator" style="font-size:1rem;padding-left: 0px">Experiment Manager</a>')
+              $(".navbar").append('<a class="nav-link navbar-brand" id="prog_tracker" href="?code=creator" style="font-size:1rem;padding-left: 0px">Progress Tracker</a>')
+              $(".navbar").append('<a class="nav-link navbar-brand" id="results_manager" href="?code=creator" style="font-size:1rem;padding-left: 0px">Results</a>')
               $("#logout").click(function(){
                 localStorage.removeItem('token')
               })
 
-              user_view()
+              //listen for button presses in header
+              $("#user_manager").click(function(){
+                user_view()
+              })
+
+              //user_view()
+              experiment_view()
             },
             error: function (data){
               $('#alert-badpass').show()
@@ -360,6 +416,203 @@ h5{
     })
   }
 
+  function experiment_view(){
+    $('.main').html(`
+      <div class = 'content'>
+        <h2>Experiment Manager</h2>
+        <br>
+        <p>This page allows you to add and delete experiments.</p>
+        <button id = "add_exp" onclick = "return false;" class="btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#exp_modal" >Add Experiment</button>
+        <br>
+        <br>
+        <br>
+        <table id="exp_table" class="display nowrap table compact" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Creator</th>
+                    <th># Participants</th>
+                    <th>Question</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        </table>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exp_modal" tabindex="-1" role="dialog" aria-labelledby="expModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add an Experiment</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <div class = 'content'>
+              <form>
+                <div class="form-group col-md-12 required">
+                  <label class = 'control-label' for="title">Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="" required = 'required'>
+                </div>
+                <div class="form-group col-md-12 required">
+                  <label class = 'control-label' for="creator">Creator</label>
+                  <input type="text" class="form-control" id="creator" placeholder="">
+                </div>
+                <div class="form-group col-md-12 required">
+                  <label class = 'control-label' for="question">Question</label>
+                  <input type="text" class="form-control" id="question" placeholder="">
+                </div>
+                <div class="form-group col-md-12 required">
+                  <label class = 'control-label' for="my-select">Select Users</label>
+                  <center>
+                    <select id='user_search' multiple='multiple'>
+                    </select>
+                  </center>
+                </div>
+                <input type="text" class="form-control" id="id" placeholder="id">
+                <div class="form-group col-md-12">
+                  <button id = "add_exp_db" onclick = "return false;" class="btn btn-dark" type="button" style='width:100%;'>Add Experiment</button>
+                </div>
+              </form>
+              <div class="alert alert-danger" id = "alert-req" role="alert"> Please provide all required information </div>
+              <div class="alert alert-success" id = "alert-success" role="success"> User added successfully </div>
+              <div class="alert alert-danger" id = "alert-dup" role="alert"> User already exists </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    `)
+
+
+
+    $('#id').hide()
+    $('#alert-req').hide()
+    $('#alert-success').hide()
+    $('#alert-dup').hide()
+
+    t = $('#exp_table').DataTable({
+        language: {
+            searchPanes: {
+                emptyPanes: 'There are no experiments to display. :/'
+            }
+        },
+        "bSortClasses": false
+    });
+
+
+    $.ajax({
+      url: 'api/v1/people_internal/',
+      type: "GET",
+      dataType: "json",
+      beforeSend: function(xhr){
+        if(localStorage.token){
+          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+        }
+      },
+      success: function(data) {
+        for(i=0; i < data.length; i++){
+          var nice_name = data[i].rank + ' ' + data[i].first + ' ' + data[i].last
+          $('#user_search').append("<option data = "+data[i].id+" value='" + nice_name + "'>" + nice_name + "</option>")
+        }
+
+        $('#user_search').multiSelect({
+          selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
+          selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
+          selectableFooter: "<div class='custom-header'>Available Users</div>",
+          selectionFooter: "<div class='custom-header'>Selected Users</div>",
+          afterInit: function(ms){
+            var that = this,
+                $selectableSearch = that.$selectableUl.prev(),
+                $selectionSearch = that.$selectionUl.prev(),
+                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+            .on('keydown', function(e){
+              if (e.which === 40){
+                that.$selectableUl.focus();
+                return false;
+              }
+            });
+
+            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+            .on('keydown', function(e){
+              if (e.which == 40){
+                that.$selectionUl.focus();
+                return false;
+              }
+            });
+          },
+          afterSelect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+          },
+          afterDeselect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+          }
+        });
+      }
+    })
+
+    $("#add_exp_db").click(function() {
+      var title = $("#title").val()
+      var creator = $("#creator").val()
+      var names = $(".ms-selection>.ms-list>.ms-selected").map(function(){return $(this).attr('data')}).get() //heres the big challenge, how do i get these names (ids?) to the server - it is now returning array of ids
+      var question = $("#question").val()
+      var email = $("#email").val()
+
+      //next steps: prepare view and url to accept input to make a new experiment from GUI.  make sure you can pass an array...
+
+
+      // $.ajax({
+      //   url: 'api/v1/add_people_internal/',
+      //   type: "POST",
+      //   data: {first:first, middle:middle, last:last, rank:rank, email:email},
+      //   beforeSend: function(xhr){
+      //     if(localStorage.token){
+      //       xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+      //     }
+      //   },
+
+        // success: function (data, textStatus, xhr){
+        //   if(xhr.status == 201){
+        //     $('#alert-req').hide()
+        //     $('#alert-success').hide()
+        //     $('#alert-dup').hide()
+        //     $('#alert-req').show()
+        //     $('#alert-req').delay(2500).fadeOut('slow')
+        //
+        //   } else{
+        //     $('form').get(0).reset()
+        //     $('#alert-req').hide()
+        //     $('#alert-success').hide()
+        //     $('#alert-dup').hide()
+        //     $('#alert-success').show()
+        //     $('#alert-success').delay(2500).fadeOut('slow')
+        //
+        //     if(id != ''){
+        //       $('.close').click()
+        //       $('#alert-success').fadeOut('slow')
+        //     }
+        //   }
+        // }
+      })
+
+
+
+  }
+
+
+
+
+
+
+
   function user_view(){
     $('.main').html(`
       <div class = 'content'>
@@ -367,11 +620,10 @@ h5{
         <br>
         <p>This page allows you to add new users via form or bulk upload as well as edit and delete existing users.</p>
         <button id = "add_user_form" onclick = "return false;" class="btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#exampleModal" >Add New User</button>
-        <button id = "add_user_bulk" onclick = "return false;" class="btn btn-dark" type="button" style='width:25%;' disabled>Bulk Upload</button>
         <br>
         <br>
         <br>
-        <table id="example" class="display nowrap table" style="width:100%">
+        <table id="example" class="display nowrap table compact" style="width:100%">
             <thead>
                 <tr>
                     <th>First Name</th>
@@ -489,9 +741,10 @@ h5{
     t = $('#example').DataTable({
         language: {
             searchPanes: {
-                emptyPanes: 'There are no panes to display. :/'
+                emptyPanes: 'There are no users to display. :/'
             }
         },
+        "bSortClasses": false
     });
 
     $('#alert-req').hide()
@@ -561,8 +814,8 @@ h5{
                 t.clear()
 
                 for(var i = 0; i < data.length; i++){
-                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-                '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button" >Delete</button>']).draw()
+                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+                '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                 }
 
                 $('.edit_btn').click(function(){
@@ -607,8 +860,8 @@ h5{
                           t.clear()
 
                           for(var i = 0; i < data.length; i++){
-                            t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-                          '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button" >Delete</button>']).draw()
+                            t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+                          '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                           }
 
                           $('.edit_btn').click(function(){
@@ -642,8 +895,8 @@ h5{
                                 t.clear()
 
                                 for(var i = 0; i < data.length; i++){
-                                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-                                '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button" >Delete</button>']).draw()
+                                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+                                '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                                 }
 
                                 $('.edit_btn').click(function(){
@@ -705,8 +958,8 @@ h5{
 
       success: function (data){
         for(var i = 0; i < data.length; i++){
-          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-        '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button">Delete</button>']).draw()
+          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+        '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button"><i class="bi bi-trash"></i></button>']).draw()
         }
 
         $('.edit_btn').click(function(){
@@ -751,8 +1004,8 @@ h5{
                   t.clear()
 
                   for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-                  '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button" >Delete</button>']).draw()
+                    t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+                  '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                   }
 
                   $('.edit_btn').click(function(){
@@ -786,8 +1039,8 @@ h5{
                         t.clear()
 
                         for(var i = 0; i < data.length; i++){
-                          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark" type="button">Edit</button>',
-                        '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn" type="button" >Delete</button>']).draw()
+                          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+i+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+                        '<button id = "delete_btn" data='+i+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                         }
 
                         $('.edit_btn').click(function(){
