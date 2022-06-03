@@ -1,10 +1,11 @@
 from django.urls import include, path
-from .views import Results_ClosenessExternalView, ExperimentClosenessExternalView, add_closeness_exp_external, add_closeness_results, Results_ClosenessView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, ResultsExternalView, CommentTypeView, add_results, add_comments, CommentView, add_virtue_comments, add_people_external, add_people_internal, delete_people_internal
+from .views import Results_ClosenessExternalView, ExperimentClosenessExternalView, ExperimentInternalView, add_closeness_exp_external, add_closeness_results, Results_ClosenessView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, add_exp_internal, ResultsExternalView, CommentTypeView, add_results, add_comments, CommentView, add_virtue_comments, add_people_external, add_people_internal, delete_people_internal, delete_exp_internal
 
 
 urlpatterns = [
     path('exp/', ExperimentView.as_view(), name="exp-all"),
     path('exp_external/', ExperimentExternalView.as_view(), name="exp-external-all"),
+    path('exp_internal/', ExperimentInternalView.as_view(), name="exp-internal-all"),
     path('exp_external_closeness/', ExperimentClosenessExternalView.as_view(), name="exp-external-closeness-all"),
     path('res/', ResultsView.as_view(), name="res-all"),
     path('res_closeness/', Results_ClosenessView.as_view(), name="res-closeness-all"),
@@ -22,5 +23,7 @@ urlpatterns = [
     path('add_people_internal/', add_people_internal.as_view(), name = 'add_people_internal'),
     path('delete_people_internal/', delete_people_internal.as_view(), name = 'delete_people_internal'),
     path('add_exp_external/', add_exp_external.as_view(), name = 'add_exp_external'),
+    path('add_exp_internal/', add_exp_internal.as_view(), name = 'add_exp_internal'),
+    path('delete_exp_internal/', delete_exp_internal.as_view(), name = 'delete_exp_internal'),
     path('add_closeness_exp_external/', add_closeness_exp_external.as_view(), name = 'add_closeness_exp_external'),
 ]

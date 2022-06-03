@@ -12,7 +12,7 @@ c_types = (
 )
 
 class Experiment(models.Model):
-	title = models.CharField(max_length = 200)
+	title = models.CharField(max_length = 200, unique = True)
 	creator = models.CharField(max_length = 60)
 	date = models.DateField(auto_now_add=True)
 	completed = models.BinaryField()

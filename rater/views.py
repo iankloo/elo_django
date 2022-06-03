@@ -18,12 +18,48 @@ class UserAPIView(RetrieveAPIView):
 		return self.request.user
 
 
+class add_exp_internal(APIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+
+		title = request.data['title']
+		creator = request.data['creator']
+		names = request.data.getlist('names[]') #this is weird, but how you have to retrieve the list from AJAX
+		question = request.data['question']
+		comment_type = 'Standard'
+
+		if title == '' or creator == '' or names == '' or question == '':
+			return Response(status = 201)
+		else:
+			people = People.objects.filter(pk__in = names)
+
+			ex = Experiment()
+			ex.title = title
+			ex.creator = creator
+			ex.question = question
+			ex.comment_type = comment_type
+			ex.save()
+			for p in people:
+				ex.names.add(p)
+			ex.save()
+
+			return Response(status = 200)
+
+
 #restrict permissions later
 #@permission_classes((permissions.AllowAny,))
 class delete_people_internal(APIView):
 	permission_classes = (IsAuthenticated,)
 	def post(self, request, version):
 		People.objects.get(id = request.data['id']).delete()
+
+		return Response(status = 200)
+
+class delete_exp_internal(APIView):
+	permission_classes = (IsAuthenticated,)
+	def post(self, request, version):
+		Experiment.objects.get(id = request.data['id']).delete()
 
 		return Response(status = 200)
 
@@ -95,9 +131,14 @@ class PeopleInternalView(generics.ListAPIView):
 
 		return queryset
 
+class ExperimentInternalView(generics.ListAPIView):
+	permission_classes = (IsAuthenticated,)
+	serializer_class = ExperimentSerializer
 
+	def get_queryset(self):
+		queryset = Experiment.objects.all()
 
-
+		return queryset
 
 
 class ExperimentView(generics.ListAPIView):
