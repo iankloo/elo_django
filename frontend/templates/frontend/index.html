@@ -601,7 +601,6 @@ h5{
         }
 
 
-        //need api to return people and their access codes given an experiment id
         $(".show_users_btn").click(function(){
           $('#view_users').click()
 
@@ -661,8 +660,29 @@ h5{
                     '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                   }
 
-                  $('.show_users_btn').click(function(){
+                  $(".show_users_btn").click(function(){
                     $('#view_users').click()
+
+                    var exp_id = $(this).attr('data')
+                    $.ajax({
+                      url: 'api/v1/user_code_view/',
+                      type: 'POST',
+                      data: {exp_id:exp_id},
+                      beforeSend: function(xhr){
+                        if(localStorage.token){
+                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                        }
+                      },
+
+                      success: function(data){
+                        t2.clear()
+                        for(var i = 0; i < data.length; i++){
+                          t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
+                        }
+                      }
+                    })
+
+
                   })
                 }
               })
@@ -784,8 +804,29 @@ h5{
                   t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                 }
 
-                $('.show_users_btn').click(function(){
+                $(".show_users_btn").click(function(){
                   $('#view_users').click()
+
+                  var exp_id = $(this).attr('data')
+                  $.ajax({
+                    url: 'api/v1/user_code_view/',
+                    type: 'POST',
+                    data: {exp_id:exp_id},
+                    beforeSend: function(xhr){
+                      if(localStorage.token){
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                      }
+                    },
+
+                    success: function(data){
+                      t2.clear()
+                      for(var i = 0; i < data.length; i++){
+                        t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
+                      }
+                    }
+                  })
+
+
                 })
 
                 $(".delete_btn").click(function(){
@@ -818,8 +859,29 @@ h5{
                           for(var i = 0; i < data.length; i++){
                             t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                           }
-                          $('.show_users_btn').click(function(){
+                          $(".show_users_btn").click(function(){
                             $('#view_users').click()
+
+                            var exp_id = $(this).attr('data')
+                            $.ajax({
+                              url: 'api/v1/user_code_view/',
+                              type: 'POST',
+                              data: {exp_id:exp_id},
+                              beforeSend: function(xhr){
+                                if(localStorage.token){
+                                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+                                }
+                              },
+
+                              success: function(data){
+                                t2.clear()
+                                for(var i = 0; i < data.length; i++){
+                                  t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
+                                }
+                              }
+                            })
+
+
                           })
                         }
                       })
