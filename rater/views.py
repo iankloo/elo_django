@@ -72,7 +72,6 @@ class add_people_internal(APIView):
 	def post(self, request, version):
 		#this signifies an edit
 		if request.data['id'] != '':
-			print(request.data)
 			first = request.data['first']
 			if(request.data['middle']):
 				middle = request.data['middle']
@@ -139,6 +138,18 @@ class ExperimentInternalView(generics.ListAPIView):
 		queryset = Experiment.objects.all()
 
 		return queryset
+
+class UserCodeView(generics.ListAPIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+		exp_id = request.data['exp_id']
+
+		exp = Experiment.objects.get(pk = exp_id)
+		res = Results.objects.filter(experiment_name = exp)
+		users_and_ids = res.values_list( 'rater__rank', 'rater__first', 'rater__last', 'rater__email','uuid').distinct()
+
+		return Response(users_and_ids, status = 200)
 
 
 class ExperimentView(generics.ListAPIView):

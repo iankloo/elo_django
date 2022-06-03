@@ -218,6 +218,10 @@ h5{
   max-width: 750px;
 }
 
+#view_exp_modal>.modal-dialog {
+  max-width: 750px;
+}
+
 .search-input{
   width: 100%;
 }
@@ -269,6 +273,12 @@ h5{
 <link rel="stylesheet" href="{% static 'frontend/css/multi-select.css' %}"/>
 <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.multi-select.js' %}"></script>
 <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.quicksearch.js' %}"></script>
+
+<!--export buttons for table-->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 
 
 
@@ -444,6 +454,7 @@ h5{
         <br>
         <p>This page allows you to add and delete experiments.</p>
         <button id = "add_exp" onclick = "return false;" class="btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#exp_modal" >Add Experiment</button>
+        <button id = "view_users" onclick = "return false;" class="invisible btn btn-dark" type="button" style='width:0%;' data-toggle="modal" data-target="#view_exp_modal" ></button>
         <br>
         <br>
         <br>
@@ -454,10 +465,41 @@ h5{
                     <th>Creator</th>
                     <th># Participants</th>
                     <th>Question</th>
+                    <th>Users</th>
                     <th>Delete</th>
                 </tr>
             </thead>
         </table>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="view_exp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">View Experiment Users</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <table id="user_code_table" class="display nowrap table compact" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>First</th>
+                  <th>Last</th>
+                  <th>Email</th>
+                  <th>Access Code</th>
+                </tr>
+              </thead>
+            </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" data-dismiss="modal">close</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Modal -->
@@ -524,6 +566,22 @@ h5{
         "bSortClasses": false
     });
 
+    t2 = $('#user_code_table').DataTable({
+        language: {
+            searchPanes: {
+                emptyPanes: 'There are no experiments to display. :/'
+            }
+        },
+        "bSortClasses": false,
+        dom: 'Bfrtip',
+        buttons: [{
+          extend: "csv",
+          text: "Export to CSV"
+        }],
+    });
+
+
+
 
     $.ajax({
       url: 'api/v1/exp_internal/',
@@ -538,8 +596,38 @@ h5{
       success: function (data){
         t.clear()
         for(var i = 0; i < data.length; i++){
-          t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
+          t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
+          '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
         }
+
+
+        //need api to return people and their access codes given an experiment id
+        $(".show_users_btn").click(function(){
+          $('#view_users').click()
+
+          var exp_id = $(this).attr('data')
+          $.ajax({
+            url: 'api/v1/user_code_view/',
+            type: 'POST',
+            data: {exp_id:exp_id},
+            beforeSend: function(xhr){
+              if(localStorage.token){
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+              }
+            },
+
+            success: function(data){
+              t2.clear()
+              for(var i = 0; i < data.length; i++){
+                t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
+              }
+            }
+          })
+
+
+        })
+
+
 
         $(".delete_btn").click(function(){
           var id = $(this).attr('data')
@@ -569,8 +657,13 @@ h5{
                 success: function (data){
                   t.clear()
                   for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
+                    t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
+                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                   }
+
+                  $('.show_users_btn').click(function(){
+                    $('#view_users').click()
+                  })
                 }
               })
             }
@@ -691,6 +784,10 @@ h5{
                   t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                 }
 
+                $('.show_users_btn').click(function(){
+                  $('#view_users').click()
+                })
+
                 $(".delete_btn").click(function(){
                   var id = $(this).attr('data')
                   $.ajax({
@@ -721,6 +818,9 @@ h5{
                           for(var i = 0; i < data.length; i++){
                             t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                           }
+                          $('.show_users_btn').click(function(){
+                            $('#view_users').click()
+                          })
                         }
                       })
                     }
