@@ -1349,17 +1349,15 @@ h5{
                 }
 
                 $('.edit_btn').click(function(){
-
+                  var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
                   $('#add_user_form').click()
-                  $('#first_name').val(data[$(this).attr('data')].first)
-                  $('#middle_name').val(data[$(this).attr('data')].middlle)
-                  $('#last_name').val(data[$(this).attr('data')].last)
-                  $('#rank_select').val(data[$(this).attr('data')].rank)
-                  $('#email').val(data[$(this).attr('data')].email)
-                  $('#id').val(data[$(this).attr('data')].id)
-
+                  $('#first_name').val(this_button.first)
+                  $('#middle_name').val(this_button.middlle)
+                  $('#last_name').val(this_button.last)
+                  $('#rank_select').val(this_button.rank)
+                  $('#email').val(this_button.email)
+                  $('#id').val(this_button.id)
                 })
-
                 $(".delete_btn").click(function(){
                   var id = $(this).attr('data')
                   $.ajax({
@@ -1395,15 +1393,14 @@ h5{
                           }
 
                           $('.edit_btn').click(function(){
-
+                            var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
                             $('#add_user_form').click()
-                            $('#first_name').val(data[$(this).attr('data')].first)
-                            $('#middle_name').val(data[$(this).attr('data')].middlle)
-                            $('#last_name').val(data[$(this).attr('data')].last)
-                            $('#rank_select').val(data[$(this).attr('data')].rank)
-                            $('#email').val(data[$(this).attr('data')].email)
-                            $('#id').val(data[$(this).attr('data')].id)
-
+                            $('#first_name').val(this_button.first)
+                            $('#middle_name').val(this_button.middlle)
+                            $('#last_name').val(this_button.last)
+                            $('#rank_select').val(this_button.rank)
+                            $('#email').val(this_button.email)
+                            $('#id').val(this_button.id)
                           })
 
                           $(".delete_btn").click(function(){
@@ -1430,16 +1427,16 @@ h5{
                                 }
 
                                 $('.edit_btn').click(function(){
-
+                                  var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
                                   $('#add_user_form').click()
-                                  $('#first_name').val(data[$(this).attr('data')].first)
-                                  $('#middle_name').val(data[$(this).attr('data')].middlle)
-                                  $('#last_name').val(data[$(this).attr('data')].last)
-                                  $('#rank_select').val(data[$(this).attr('data')].rank)
-                                  $('#email').val(data[$(this).attr('data')].email)
-                                  $('#id').val(data[$(this).attr('data')].id)
-
+                                  $('#first_name').val(this_button.first)
+                                  $('#middle_name').val(this_button.middlle)
+                                  $('#last_name').val(this_button.last)
+                                  $('#rank_select').val(this_button.rank)
+                                  $('#email').val(this_button.email)
+                                  $('#id').val(this_button.id)
                                 })
+
                               },
                               error: function(){
                                 admin_splash()
@@ -1493,15 +1490,14 @@ h5{
         }
 
         $('.edit_btn').click(function(){
-
+          var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
           $('#add_user_form').click()
-          $('#first_name').val(data[$(this).attr('data')].first)
-          $('#middle_name').val(data[$(this).attr('data')].middlle)
-          $('#last_name').val(data[$(this).attr('data')].last)
-          $('#rank_select').val(data[$(this).attr('data')].rank)
-          $('#email').val(data[$(this).attr('data')].email)
-          $('#id').val(data[$(this).attr('data')].id)
-
+          $('#first_name').val(this_button.first)
+          $('#middle_name').val(this_button.middlle)
+          $('#last_name').val(this_button.last)
+          $('#rank_select').val(this_button.rank)
+          $('#email').val(this_button.email)
+          $('#id').val(this_button.id)
         })
 
         $(".delete_btn").click(function(){
@@ -1539,16 +1535,16 @@ h5{
                   }
 
                   $('.edit_btn').click(function(){
-
+                    var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
                     $('#add_user_form').click()
-                    $('#first_name').val(data[$(this).attr('data')].first)
-                    $('#middle_name').val(data[$(this).attr('data')].middlle)
-                    $('#last_name').val(data[$(this).attr('data')].last)
-                    $('#rank_select').val(data[$(this).attr('data')].rank)
-                    $('#email').val(data[$(this).attr('data')].email)
-                    $('#id').val(data[$(this).attr('data')].id)
-
+                    $('#first_name').val(this_button.first)
+                    $('#middle_name').val(this_button.middlle)
+                    $('#last_name').val(this_button.last)
+                    $('#rank_select').val(this_button.rank)
+                    $('#email').val(this_button.email)
+                    $('#id').val(this_button.id)
                   })
+
 
                   $(".delete_btn").click(function(){
                     var id = $(this).attr('data')
@@ -1574,15 +1570,14 @@ h5{
                         }
 
                         $('.edit_btn').click(function(){
-
+                          var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
                           $('#add_user_form').click()
-                          $('#first_name').val(data[$(this).attr('data')].first)
-                          $('#middle_name').val(data[$(this).attr('data')].middlle)
-                          $('#last_name').val(data[$(this).attr('data')].last)
-                          $('#rank_select').val(data[$(this).attr('data')].rank)
-                          $('#email').val(data[$(this).attr('data')].email)
-                          $('#id').val(data[$(this).attr('data')].id)
-
+                          $('#first_name').val(this_button.first)
+                          $('#middle_name').val(this_button.middlle)
+                          $('#last_name').val(this_button.last)
+                          $('#rank_select').val(this_button.rank)
+                          $('#email').val(this_button.email)
+                          $('#id').val(this_button.id)
                         })
                       },
                       error: function(){
