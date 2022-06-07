@@ -285,7 +285,7 @@ h5{
 
 
 
-  <script>
+<script>
   if (!String.prototype.format) {
     String.prototype.format = function() {
       var args = arguments;
@@ -297,9 +297,6 @@ h5{
       });
     };
   }
-
-
-
 
   $.fn.select2.defaults.set( "theme", "bootstrap" );
 
@@ -328,11 +325,6 @@ h5{
   $('#login_toggle').click(function(){
     admin_splash()
   })
-
-  //console.log(urlParams.get('code'))
-
-  //splash_page();
-
 
   //admin page
   function admin_splash(){
@@ -375,8 +367,6 @@ h5{
         })
 
         user_view()
-        //user_view()
-        //progress_view()
       },
       error: function (data){
         $('.main').html(`
@@ -461,6 +451,41 @@ h5{
     })
   }
 
+  function results_view(){
+    $('.main').html(`
+      <div class = 'content'>
+        <h2>Results</h2>
+        <p>This page allows you to see the results of all of your experiments.</p>
+        <br>
+        <div id = 'completed_exps'>
+          <h3>Completed Experiments</h3>
+        </div>
+      </div>
+
+      <button id = "open_user_modal" onclick = "return false;" class="invisible btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#user_comp_modal" >Open Modal</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="user_comp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">User Progress Tracker</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id='user_modal_cards'>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" data-dismiss="modal">close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    `)
+  }
+
 
   function progress_view(){
     $('.main').html(`
@@ -479,7 +504,6 @@ h5{
 
       <button id = "open_user_modal" onclick = "return false;" class="invisible btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#user_comp_modal" >Open Modal</button>
 
-
       <!-- Modal -->
       <div class="modal fade" id="user_comp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -491,9 +515,6 @@ h5{
               </button>
             </div>
             <div class="modal-body" id='user_modal_cards'>
-
-
-
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-dark" data-dismiss="modal">close</button>
@@ -1068,7 +1089,6 @@ h5{
     $('#alert-req').hide()
     $('#alert-success').hide()
     $('#alert-dup').hide()
-
     //need to reset these in case they were set by an edit
     $('#add_user_form').click(function(){
       $('#first_name').val('')
@@ -1179,13 +1199,11 @@ h5{
           $('#alert-success').hide()
           $('#alert-dup').hide()
           $('#alert-dup').show()
-
           $('#alert-dup').delay(2500).fadeOut('slow')
         }
       })
     })
   }
-
 
   //main page that asks for access code
   function splash_page(){

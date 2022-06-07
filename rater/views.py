@@ -184,21 +184,6 @@ class ExperimentInternalView(generics.ListAPIView):
 	def get_queryset(self):
 		queryset = Experiment.objects.all()
 
-		#not gonna do this here, should require the progress tracker to hit results separately
-		# if len(queryset) > 0:
-		# 	running_complete = []
-		# 	for q in queryset:	
-		# 		my_res = Results.objects.filter(experiment_name = q.id, winner__isnull=True)
-		# 		done = Results.objects.filter(experiment_name = q.id, winner__isnull=False)
-				#q = q.annotate(per_complete = 'test')
-
-				#winners = list(my_res.values_list('winner', flat = True))
-				#per_complete = round((len([i for i in winners if i != None]) / len(winners))*100, 2)
-				#running_complete.append(per_complete)
-
-				#q.per_complete = per_complete
-				#q.save() #this might slow things down...
-
 		return queryset
 
 class UserCodeView(generics.ListAPIView):
