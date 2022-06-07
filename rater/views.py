@@ -9,6 +9,7 @@ from django.utils import timezone
 from itertools import chain
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveAPIView
+from django.db.models import CharField, Value, Count
 
 class UserAPIView(RetrieveAPIView):
 	permission_classes = (IsAuthenticated,)
@@ -16,6 +17,45 @@ class UserAPIView(RetrieveAPIView):
 
 	def get_object(self):
 		return self.request.user
+
+
+#build this progress checking view...
+class get_progress_internal(APIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+
+		ids = request.data.getlist('ids[]')
+		pers = []
+		for i in ids:	
+			my_res = Results.objects.filter(experiment_name = i)
+			per = round((my_res.filter(winner__isnull = False).count() / len(my_res)) * 100, 2)
+			pers.append(per)
+
+		return Response(pers, status = 200)
+
+
+class get_progress_byuser_internal(APIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+
+		id = request.data['u_id']
+
+		my_res = Results.objects.filter(experiment_name = id)
+		raters = list(set(my_res.values_list('rater')))
+		raters_names = list(set(my_res.values_list('rater__first', 'rater__last')))
+
+		pers = []
+		counter = 0
+		for r in raters:
+			rater_sub = my_res.filter(rater = r)
+			per = round((rater_sub.filter(winner__isnull = False).count() / len(rater_sub)) * 100, 2)
+			pers.append({'first': raters_names[counter][0], 'last': raters_names[counter][1], 'per': per})
+			counter += 1
+
+		return Response(pers, status = 200)
+
 
 
 class add_exp_internal(APIView):
@@ -136,6 +176,21 @@ class ExperimentInternalView(generics.ListAPIView):
 
 	def get_queryset(self):
 		queryset = Experiment.objects.all()
+
+		#not gonna do this here, should require the progress tracker to hit results separately
+		# if len(queryset) > 0:
+		# 	running_complete = []
+		# 	for q in queryset:	
+		# 		my_res = Results.objects.filter(experiment_name = q.id, winner__isnull=True)
+		# 		done = Results.objects.filter(experiment_name = q.id, winner__isnull=False)
+				#q = q.annotate(per_complete = 'test')
+
+				#winners = list(my_res.values_list('winner', flat = True))
+				#per_complete = round((len([i for i in winners if i != None]) / len(winners))*100, 2)
+				#running_complete.append(per_complete)
+
+				#q.per_complete = per_complete
+				#q.save() #this might slow things down...
 
 		return queryset
 

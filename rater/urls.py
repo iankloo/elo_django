@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import UserCodeView, Results_ClosenessExternalView, ExperimentClosenessExternalView, ExperimentInternalView, add_closeness_exp_external, add_closeness_results, Results_ClosenessView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, add_exp_internal, ResultsExternalView, CommentTypeView, add_results, add_comments, CommentView, add_virtue_comments, add_people_external, add_people_internal, delete_people_internal, delete_exp_internal
+from .views import get_progress_byuser_internal, get_progress_internal, UserCodeView, Results_ClosenessExternalView, ExperimentClosenessExternalView, ExperimentInternalView, add_closeness_exp_external, add_closeness_results, Results_ClosenessView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, add_exp_internal, ResultsExternalView, CommentTypeView, add_results, add_comments, CommentView, add_virtue_comments, add_people_external, add_people_internal, delete_people_internal, delete_exp_internal
 
 
 urlpatterns = [
@@ -27,4 +27,6 @@ urlpatterns = [
     path('delete_exp_internal/', delete_exp_internal.as_view(), name = 'delete_exp_internal'),
     path('add_closeness_exp_external/', add_closeness_exp_external.as_view(), name = 'add_closeness_exp_external'),
     path('user_code_view/', UserCodeView.as_view(), name = 'user_code_view'),
+    path('get_progress_internal/', get_progress_internal.as_view(), name = 'get_progress_internal'),
+    path('get_progress_byuser_internal/', get_progress_byuser_internal.as_view(), name = 'get_progress_byuser_internal'),
 ]

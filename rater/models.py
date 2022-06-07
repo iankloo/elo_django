@@ -21,6 +21,7 @@ class Experiment(models.Model):
 	)
 	question = models.CharField(max_length = 200)
 	comment_type = models.CharField(choices = c_types, max_length = 30, default = 'Standard')
+	per_complete = models.CharField(blank = True, null = True, default = 0, max_length = 30)
 
 	def __str__(self):
 		return self.title + " - " + str(self.date)
