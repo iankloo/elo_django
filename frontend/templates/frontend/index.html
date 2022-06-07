@@ -248,13 +248,6 @@ h5{
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/css/bootstrap-select.css">
 
-<!-- Latest compiled and minified JavaScript -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/js/bootstrap-select.js"></script> -->
-
-<!-- (Optional) Latest compiled and minified JavaScript translation files -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/js/i18n/defaults-am_ET.js"></script> -->
-
-
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
@@ -381,9 +374,9 @@ h5{
           progress_view()
         })
 
+        user_view()
         //user_view()
-        //user_view()
-        progress_view()
+        //progress_view()
       },
       error: function (data){
         $('.main').html(`
@@ -579,6 +572,7 @@ h5{
 
                 success: function (data_3, textStatus, xhr){
                   $("#user_modal_cards>.card").remove()
+                  console.log(data_3)
                   for(i = 0; i < data_3.length; i++){
                     first = data_3[i].first
                     last = data_3[i].last
@@ -608,8 +602,9 @@ h5{
 
 
 
-
+  //what happens when you click on "experiment manager"
   function experiment_view(){
+    //basic html including placeholders for the table and the edit/delete modals
     $('.main').html(`
       <div class = 'content'>
         <h2>Experiment Manager</h2>
@@ -714,13 +709,14 @@ h5{
     `)
 
 
-
+    //hide all of the alerts by default (these are in the modals)
     $('#id').hide()
     $('#alert-req').hide()
     $('#alert-success').hide()
     $('#alert-dup').hide()
     $('#alert-user-req').hide()
 
+    //setup tables - one for main page, one for users in the edit screens
     t = $('#exp_table').DataTable({
         language: {
             searchPanes: {
@@ -733,7 +729,7 @@ h5{
     t2 = $('#user_code_table').DataTable({
         language: {
             searchPanes: {
-                emptyPanes: 'There are no experiments to display. :/'
+                emptyPanes: 'There are no users to display. :/'
             }
         },
         "bSortClasses": false,
@@ -744,9 +740,7 @@ h5{
         }],
     });
 
-
-
-
+    //on load, load experiments into the table using GET request to API
     $.ajax({
       url: 'api/v1/exp_internal/',
       type: "GET",
@@ -758,16 +752,18 @@ h5{
       },
 
       success: function (data){
+        //clear old stuff from table and populate it
         t.clear()
         for(var i = 0; i < data.length; i++){
           t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
           '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
         }
 
-
+        //setup listener that takes action when edit button is pressed - have to do this after the buttons
+        //are created in the above loop.
+        //hits API to get users associated with the experiment and loads them into a table
         $(".show_users_btn").click(function(){
           $('#view_users').click()
-
           var exp_id = $(this).attr('data')
           $.ajax({
             url: 'api/v1/user_code_view/',
@@ -778,7 +774,6 @@ h5{
                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
               }
             },
-
             success: function(data){
               t2.clear()
               for(var i = 0; i < data.length; i++){
@@ -786,12 +781,10 @@ h5{
               }
             }
           })
-
-
         })
 
-
-
+        //same idea as edit buttons - use API to delete an experiment when button is clicked
+        //if successful, this reloads the experiment manager page to reflect updated table
         $(".delete_btn").click(function(){
           var id = $(this).attr('data')
           $.ajax({
@@ -804,114 +797,8 @@ h5{
               }
               return confirm("Are you sure you want to delete this experiment?");
             },
-
-
             success: function (data){
-              $.ajax({
-                url: 'api/v1/exp_internal/',
-                type: "GET",
-                dataType: "json",
-                beforeSend: function(xhr){
-                  if(localStorage.token){
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                  }
-                },
-
-                success: function (data){
-                  t.clear()
-                  for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                  }
-
-                  $(".show_users_btn").click(function(){
-                    $('#view_users').click()
-
-                    var exp_id = $(this).attr('data')
-                    $.ajax({
-                      url: 'api/v1/user_code_view/',
-                      type: 'POST',
-                      data: {exp_id:exp_id},
-                      beforeSend: function(xhr){
-                        if(localStorage.token){
-                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                        }
-                      },
-
-                      success: function(data){
-                        t2.clear()
-                        for(var i = 0; i < data.length; i++){
-                          t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
-                        }
-                      }
-                    })
-
-
-                  })
-
-                  $(".delete_btn").click(function(){
-          var id = $(this).attr('data')
-          $.ajax({
-            url: 'api/v1/delete_exp_internal/',
-            type: "POST",
-            data: {id:id},
-            beforeSend:function(xhr){
-              if(localStorage.token){
-                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-              }
-              return confirm("Are you sure you want to delete this experiment?");
-            },
-
-
-            success: function (data){
-              $.ajax({
-                url: 'api/v1/exp_internal/',
-                type: "GET",
-                dataType: "json",
-                beforeSend: function(xhr){
-                  if(localStorage.token){
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                  }
-                },
-
-                success: function (data){
-                  t.clear()
-                  for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                  }
-
-                  $(".show_users_btn").click(function(){
-                    $('#view_users').click()
-
-                    var exp_id = $(this).attr('data')
-                    $.ajax({
-                      url: 'api/v1/user_code_view/',
-                      type: 'POST',
-                      data: {exp_id:exp_id},
-                      beforeSend: function(xhr){
-                        if(localStorage.token){
-                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                        }
-                      },
-
-                      success: function(data){
-                        t2.clear()
-                        for(var i = 0; i < data.length; i++){
-                          t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
-                        }
-                      }
-                    })
-
-
-                  })
-                }
-              })
-            }
-          })
-        })
-                }
-              })
+              experiment_view()
             }
           })
         })
@@ -919,72 +806,82 @@ h5{
     })
 
 
-    $.ajax({
-      url: 'api/v1/people_internal/',
-      type: "GET",
-      dataType: "json",
-      beforeSend: function(xhr){
-        if(localStorage.token){
-          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-        }
-      },
-      success: function(data) {
-        for(i=0; i < data.length; i++){
-          var nice_name = data[i].rank + ' ' + data[i].first + ' ' + data[i].last
-          $('#user_search').append("<option data = "+data[i].id+" value='" + nice_name + "'>" + nice_name + "</option>")
-        }
 
-        $('#user_search').multiSelect({
-          selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
-          selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
-          selectableFooter: "<div class='custom-header'>Available Users</div>",
-          selectionFooter: "<div class='custom-header'>Selected Users</div>",
-          afterInit: function(ms){
-            var that = this,
-                $selectableSearch = that.$selectableUl.prev(),
-                $selectionSearch = that.$selectionUl.prev(),
-                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-            .on('keydown', function(e){
-              if (e.which === 40){
-                that.$selectableUl.focus();
-                return false;
-              }
-            });
-
-            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-            .on('keydown', function(e){
-              if (e.which == 40){
-                that.$selectionUl.focus();
-                return false;
-              }
-            });
-          },
-          afterSelect: function(){
-            this.qs1.cache();
-            this.qs2.cache();
-          },
-          afterDeselect: function(){
-            this.qs1.cache();
-            this.qs2.cache();
+    //hit API to load up users that we can add to the experiments
+    //only do this when someone clicks to add an experiment
+    $("#add_exp").click(function(){
+      $.ajax({
+        url: 'api/v1/people_internal/',
+        type: "GET",
+        dataType: "json",
+        beforeSend: function(xhr){
+          if(localStorage.token){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
           }
-        });
-      }
-    })
+        },
+        success: function(data) {
+          for(i=0; i < data.length; i++){
+            var nice_name = data[i].rank + ' ' + data[i].first + ' ' + data[i].last
+            $('#user_search').append("<option data = "+data[i].id+" value='" + nice_name + "'>" + nice_name + "</option>")
+          }
 
+          $('#user_search').multiSelect({
+            selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
+            selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Type to Search'>",
+            selectableFooter: "<div class='custom-header'>Available Users</div>",
+            selectionFooter: "<div class='custom-header'>Selected Users</div>",
+            afterInit: function(ms){
+              var that = this,
+                  $selectableSearch = that.$selectableUl.prev(),
+                  $selectionSearch = that.$selectionUl.prev(),
+                  selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                  selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+              that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+              .on('keydown', function(e){
+                if (e.which === 40){
+                  that.$selectableUl.focus();
+                  return false;
+                }
+              });
+
+              that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+              .on('keydown', function(e){
+                if (e.which == 40){
+                  that.$selectionUl.focus();
+                  return false;
+                }
+              });
+            },
+            afterSelect: function(){
+              this.qs1.cache();
+              this.qs2.cache();
+            },
+            afterDeselect: function(){
+              this.qs1.cache();
+              this.qs2.cache();
+            }
+          });
+        }
+      })
+    })
+    
+
+    //when "add experiment" button pressed in modal, create the experiment with a POST request to API
+    //if successful, reload the experiment manager, otherwise show the correct error
+    //note: i use status 201 and 202 to prompt the user if they didn't provide all required fields or if they
+    //didn't provide enough users, respectively.  The 500 error that triggers the error() function is for duplicate
+    //titles, which aren't allowed.
     $("#add_exp_db").click(function() {
       var title = $("#title").val()
       var creator = $("#creator").val()
-      var names = $(".ms-selection>.ms-list>.ms-selected").map(function(){return $(this).attr('data')}).get() //heres the big challenge, how do i get these names (ids?) to the server - it is now returning array of ids
+      var names = $(".ms-selection>.ms-list>.ms-selected").map(function(){return $(this).attr('data')}).get()
       var question = $("#question").val()
       var email = $("#email").val()
 
       $.ajax({
         url: 'api/v1/add_exp_internal/',
         type: "POST",
-        //contentType: "application/json",
         data: {title:title, creator:creator, names:names, question:question, email:email},
         beforeSend: function(xhr){
           if(localStorage.token){
@@ -1010,124 +907,15 @@ h5{
             $('#alert-user-req').delay(2500).fadeOut('slow')
 
           } else{
-            $('form').get(0).reset()
             $('#alert-req').hide()
             $('#alert-success').hide()
             $('#alert-dup').hide()
             $('#alert-user-req').hide()
             $('#alert-success').show()
-            $('#alert-success').delay(2500).fadeOut('slow')
-
-            if(id != ''){
-              $('.close').click()
-              $('#alert-success').fadeOut('slow')
-            }
-
-            //reload the list of experiments
-            $.ajax({
-              url: 'api/v1/exp_internal/',
-              type: "GET",
-              dataType: "json",
-              beforeSend: function(xhr){
-                if(localStorage.token){
-                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                }
-              },
-
-              success: function (data){
-                t.clear()
-                for(var i = 0; i < data.length; i++){
-                  t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                }
-
-                $(".show_users_btn").click(function(){
-                  $('#view_users').click()
-
-                  var exp_id = $(this).attr('data')
-                  $.ajax({
-                    url: 'api/v1/user_code_view/',
-                    type: 'POST',
-                    data: {exp_id:exp_id},
-                    beforeSend: function(xhr){
-                      if(localStorage.token){
-                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                      }
-                    },
-
-                    success: function(data){
-                      t2.clear()
-                      for(var i = 0; i < data.length; i++){
-                        t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
-                      }
-                    }
-                  })
-
-
-                })
-
-                $(".delete_btn").click(function(){
-                  var id = $(this).attr('data')
-                  $.ajax({
-                    url: 'api/v1/delete_exp_internal/',
-                    type: "POST",
-                    data: {id:id},
-                    beforeSend:function(xhr){
-                      if(localStorage.token){
-                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                      }
-                      return confirm("Are you sure you want to delete this experiment?");
-                    },
-
-
-                    success: function (data){
-                      $.ajax({
-                        url: 'api/v1/exp_internal/',
-                        type: "GET",
-                        dataType: "json",
-                        beforeSend: function(xhr){
-                          if(localStorage.token){
-                            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                          }
-                        },
-
-                        success: function (data){
-                          t.clear()
-                          for(var i = 0; i < data.length; i++){
-                            t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                            '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                          }
-                          $(".show_users_btn").click(function(){
-                            $('#view_users').click()
-
-                            var exp_id = $(this).attr('data')
-                            $.ajax({
-                              url: 'api/v1/user_code_view/',
-                              type: 'POST',
-                              data: {exp_id:exp_id},
-                              beforeSend: function(xhr){
-                                if(localStorage.token){
-                                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                                }
-                              },
-
-                              success: function(data){
-                                t2.clear()
-                                for(var i = 0; i < data.length; i++){
-                                  t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
-                                }
-                              }
-                            })
-                          })
-                        }
-                      })
-                    }
-                  })
-                })
-
-
-              }
-            })
+            $('.close').click()
+            $(".modal-fade").modal("hide");
+            $(".modal-backdrop").remove();
+            experiment_view()
           }
         },
         error: function (data){
@@ -1143,7 +931,9 @@ h5{
   }
 
 
+  //create the user view when "User Manager" is clicked
   function user_view(){
+    //this is the scaffolding for everything that we'll generate.  similar to experiment view above.
     $('.main').html(`
       <div class = 'content'>
         <h2>User Manager</h2>
@@ -1254,12 +1044,9 @@ h5{
           </div>
         </div>
       </div>
-
-
-
-
     `)
 
+    //binds enter key to the button in the modal
     $('input').on('keypress', (event)=> {
         if(event.which === 13){
             $('#add_user').click();
@@ -1268,6 +1055,7 @@ h5{
 
     $('#id').hide()
 
+    //setup table
     t = $('#example').DataTable({
         language: {
             searchPanes: {
@@ -1291,6 +1079,63 @@ h5{
       $('#id').val('')
     })
 
+    //make GET request to get the users already in the database, populate table
+    $.ajax({
+      url: 'api/v1/people_internal/',
+      type: "GET",
+      dataType: "json",
+      beforeSend: function(xhr){
+        if(localStorage.token){
+          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+        }
+      },
+
+      success: function (data){
+        for(var i = 0; i < data.length; i++){
+          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
+        '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button"><i class="bi bi-trash"></i></button>']).draw()
+        }
+
+        //when edit button pressed, load all relevant data into the form and open it
+        $('.edit_btn').click(function(){
+          var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
+          $('#add_user_form').click()
+          $('#first_name').val(this_button.first)
+          $('#middle_name').val(this_button.middlle)
+          $('#last_name').val(this_button.last)
+          $('#rank_select').val(this_button.rank)
+          $('#email').val(this_button.email)
+          $('#id').val(this_button.id)
+        })
+
+        //make POST request to delete user on click, reload user manager
+        $(".delete_btn").click(function(){
+          var id = $(this).attr('data')
+          $.ajax({
+            url: 'api/v1/delete_people_internal/',
+            type: "POST",
+            data: {id:id},
+            beforeSend:function(xhr){
+              if(localStorage.token){
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+              }
+              return confirm("Are you sure you want to delete this user?");
+            },
+            success: function (data, textStatus, xhr){
+              if(xhr.status == 201){
+                alert("Cannot delete user that is in one or more Experiment(s).  Please delete any Experiments involving this user before trying to delete them.")
+              } else{
+                user_view()
+              }
+            }
+          })
+        })
+      }
+    })
+
+    //hit API with POST request when user add form is filled out
+    //using 201 code to prompt that not enough all required fields provided
+    //if successful, reload page
     $("#add_user").click(function() {
       var first = $("#first_name").val()
       var middle = $("#middle_name").val()
@@ -1324,141 +1169,9 @@ h5{
             $('#alert-dup').hide()
             $('#alert-success').show()
             $('#alert-success').delay(2500).fadeOut('slow')
-
-            if(id != ''){
-              $('.close').click()
-              $('#alert-success').fadeOut('slow')
-            }
-
-            $.ajax({
-              url: 'api/v1/people_internal/',
-              type: "GET",
-              dataType: "json",
-              beforeSend: function(xhr){
-                if(localStorage.token){
-                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                }
-              },
-
-              success: function (data){
-                t.clear()
-
-                for(var i = 0; i < data.length; i++){
-                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-                '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                }
-
-                $('.edit_btn').click(function(){
-                  var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-                  $('#add_user_form').click()
-                  $('#first_name').val(this_button.first)
-                  $('#middle_name').val(this_button.middlle)
-                  $('#last_name').val(this_button.last)
-                  $('#rank_select').val(this_button.rank)
-                  $('#email').val(this_button.email)
-                  $('#id').val(this_button.id)
-                })
-                $(".delete_btn").click(function(){
-                  var id = $(this).attr('data')
-                  $.ajax({
-                    url: 'api/v1/delete_people_internal/',
-                    type: "POST",
-                    data: {id:id},
-                    beforeSend:function(xhr){
-                      if(localStorage.token){
-                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                      }
-                      return confirm("Are you sure you want to delete this user?");
-                    },
-
-
-                    success: function (data){
-
-                      $.ajax({
-                        url: 'api/v1/people_internal/',
-                        type: "GET",
-                        dataType: "json",
-                        beforeSend: function(xhr){
-                          if(localStorage.token){
-                            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                          }
-                        },
-
-                        success: function (data){
-                          t.clear()
-
-                          for(var i = 0; i < data.length; i++){
-                            t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-                          '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                          }
-
-                          $('.edit_btn').click(function(){
-                            var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-                            $('#add_user_form').click()
-                            $('#first_name').val(this_button.first)
-                            $('#middle_name').val(this_button.middlle)
-                            $('#last_name').val(this_button.last)
-                            $('#rank_select').val(this_button.rank)
-                            $('#email').val(this_button.email)
-                            $('#id').val(this_button.id)
-                          })
-
-                          $(".delete_btn").click(function(){
-                            var id = $(this).attr('data')
-                            $.ajax({
-                              url: 'api/v1/delete_people_internal/',
-                              type: "POST",
-                              data: {id:id},
-                              beforeSend:function(xhr){
-                                if(localStorage.token){
-                                  xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                                }
-                                return confirm("Are you sure you want to delete this user?");
-                              },
-
-
-                              success: function (data){
-
-                                t.clear()
-
-                                for(var i = 0; i < data.length; i++){
-                                  t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-                                '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                                }
-
-                                $('.edit_btn').click(function(){
-                                  var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-                                  $('#add_user_form').click()
-                                  $('#first_name').val(this_button.first)
-                                  $('#middle_name').val(this_button.middlle)
-                                  $('#last_name').val(this_button.last)
-                                  $('#rank_select').val(this_button.rank)
-                                  $('#email').val(this_button.email)
-                                  $('#id').val(this_button.id)
-                                })
-
-                              },
-                              error: function(){
-                                admin_splash()
-                              }
-                            })
-                          })
-                        },
-                        error: function(){
-                          admin_splash()
-                        }
-                      })
-                    },
-                    error: function(){
-                      admin_splash()
-                    }
-                  })
-                })
-              },
-              error: function(){
-                admin_splash()
-              }
-            })
+            $(".modal-fade").modal("hide");
+            $(".modal-backdrop").remove();
+            user_view()
           }
         },
         error: function (data){
@@ -1470,145 +1183,8 @@ h5{
           $('#alert-dup').delay(2500).fadeOut('slow')
         }
       })
-
     })
-
-    $.ajax({
-      url: 'api/v1/people_internal/',
-      type: "GET",
-      dataType: "json",
-      beforeSend: function(xhr){
-        if(localStorage.token){
-          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-        }
-      },
-
-      success: function (data){
-        for(var i = 0; i < data.length; i++){
-          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-        '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button"><i class="bi bi-trash"></i></button>']).draw()
-        }
-
-        $('.edit_btn').click(function(){
-          var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-          $('#add_user_form').click()
-          $('#first_name').val(this_button.first)
-          $('#middle_name').val(this_button.middlle)
-          $('#last_name').val(this_button.last)
-          $('#rank_select').val(this_button.rank)
-          $('#email').val(this_button.email)
-          $('#id').val(this_button.id)
-        })
-
-        $(".delete_btn").click(function(){
-          var id = $(this).attr('data')
-          $.ajax({
-            url: 'api/v1/delete_people_internal/',
-            type: "POST",
-            data: {id:id},
-            beforeSend:function(xhr){
-              if(localStorage.token){
-                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-              }
-              return confirm("Are you sure you want to delete this user?");
-            },
-
-
-            success: function (data){
-
-              $.ajax({
-                url: 'api/v1/people_internal/',
-                type: "GET",
-                dataType: "json",
-                beforeSend: function(xhr){
-                  if(localStorage.token){
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                  }
-                },
-
-                success: function (data){
-                  t.clear()
-
-                  for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-                  '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                  }
-
-                  $('.edit_btn').click(function(){
-                    var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-                    $('#add_user_form').click()
-                    $('#first_name').val(this_button.first)
-                    $('#middle_name').val(this_button.middlle)
-                    $('#last_name').val(this_button.last)
-                    $('#rank_select').val(this_button.rank)
-                    $('#email').val(this_button.email)
-                    $('#id').val(this_button.id)
-                  })
-
-
-                  $(".delete_btn").click(function(){
-                    var id = $(this).attr('data')
-                    $.ajax({
-                      url: 'api/v1/delete_people_internal/',
-                      type: "POST",
-                      data: {id:id},
-                      beforeSend:function(xhr){
-                        if(localStorage.token){
-                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                        }
-                        return confirm("Are you sure you want to delete this user?");
-                      },
-
-
-                      success: function (data){
-
-                        t.clear()
-
-                        for(var i = 0; i < data.length; i++){
-                          t.row.add([data[i].first, data[i].middle, data[i].last, data[i].rank, data[i].email, '<button id = "edit_btn" data = '+data[i].id+' onclick = "return false;" class="edit_btn btn btn-dark btn-sm" type="button"><i class="bi bi-pencil"></i></button>',
-                        '<button id = "delete_btn" data='+data[i].id+' " onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                        }
-
-                        $('.edit_btn').click(function(){
-                          var this_button = data.filter(x => x.id == $(this).attr('data'))[0]
-                          $('#add_user_form').click()
-                          $('#first_name').val(this_button.first)
-                          $('#middle_name').val(this_button.middlle)
-                          $('#last_name').val(this_button.last)
-                          $('#rank_select').val(this_button.rank)
-                          $('#email').val(this_button.email)
-                          $('#id').val(this_button.id)
-                        })
-                      },
-                      error: function(){
-                        admin_splash()
-                      }
-                    })
-                  })
-                },
-                error: function(){
-                  admin_splash()
-                }
-              })
-            },
-            error: function(){
-              admin_splash()
-            }
-          })
-        })
-      },
-      error: function(){
-        admin_splash()
-      }
-    })
-
   }
-
-
-
-
-
-
 
 
   //main page that asks for access code
@@ -1635,8 +1211,9 @@ h5{
     $('#alert-invalid').hide()
   }
 
+  //page with some instructions
+  //if user doesn't have any ratings left to do, just push them to thank you page
   function pre_survey(access_code, ex_type){
-
     $.ajax({
       url: 'api/v1/res?uuid=' + access_code,
       type: "GET",
@@ -1647,7 +1224,7 @@ h5{
           $('.main').html(`
             <div class = 'content'>
               <h2>Pre-Survey Instructions</h2>
-                <p>This peer evaluation will ask you to provide feedback to your squadmates. Please be honest and professional with your comments and treat others as you would want to be treated. After you have provided a comment about each of your peers, you will make pairwise comparisons of your squadmates based on your assessment of their character. This should only take you about 10 minutes to complete.</p>
+                <p>This peer evaluation will ask you to provide feedback to your squadmates. Please be honest and professional with your ratings.</p>
 
               <button id = "start_exp_now" onclick = "return false;" class="btn btn-secondary" type="button">I Understand</button>
             </div>
@@ -1655,12 +1232,10 @@ h5{
               <div class="spinner"></div>
             </div>
           `)
-
           $("#start_exp_now").click(function() {
             $('#overlay').fadeIn()
             update_pair(access_code)
           });
-
         } else{
           $('.main').html(`
             <div class = 'content'>
@@ -1672,14 +1247,7 @@ h5{
     });
   }
 
-
-
-
-
-
-
-
-
+  //pull the question defined when experiment was created
   function get_question(exp_id){
     $.ajax({
       url: 'api/v1/exp?exp_id=' + exp_id,
@@ -1694,7 +1262,7 @@ h5{
   }
 
 
-//hit api for matchup
+//hit api to get one of the remaining pairs for a rater
 function update_pair(access_code){
   $.ajax({
     url: 'api/v1/res?uuid=' + access_code,
@@ -1710,10 +1278,9 @@ function update_pair(access_code){
           dataType: "json",
 
           success: function (data){
+            //if none left, kick to thank you page
             if(data.length == 0){
               $('#overlay').fadeOut()
-              //go_to_comments(access_code)
-              //elo_survey(access_code)
               $('.main').html(`
                 <div class = 'content'>
                   <h2>Your ratings have been captured - thank you!</h2>
@@ -1783,116 +1350,111 @@ function update_pair(access_code){
               //add_rating(data[0], data[0].name_1, start, end, access_code)
             });
           }
-
-          }
-        })
-
-
-
-
-      } else if(data.length == 0){
-        $('#overlay').fadeOut()
-        go_to_comments(access_code)
-      } else{
-        $('.main').html(`
-        <div class = 'content'>
-          <h4 id = 'num_left'></h4>
-          <br>
-          <h2 id = 'question'></h2>
-          <br><br>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="card" id = 'name1_card'>
-                <div class="card-body">
-                  <center><h4 class="card-title stretched-link" id = 'name1'></h4></center>
-                </div>
+        }
+      })
+    } else if(data.length == 0){
+      $('#overlay').fadeOut()
+      go_to_comments(access_code)
+    } else{
+      $('.main').html(`
+      <div class = 'content'>
+        <h4 id = 'num_left'></h4>
+        <br>
+        <h2 id = 'question'></h2>
+        <br><br>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card" id = 'name1_card'>
+              <div class="card-body">
+                <center><h4 class="card-title stretched-link" id = 'name1'></h4></center>
               </div>
             </div>
-            <div class="col-sm-6">
-              <div class="card" id = 'name2_card'>
-                <div class="card-body">
-                  <center><h4 class="card-title" id = 'name2'></h4></center>
-                </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card" id = 'name2_card'>
+              <div class="card-body">
+                <center><h4 class="card-title" id = 'name2'></h4></center>
               </div>
             </div>
           </div>
         </div>
-        <div id="overlay" style="display:none;">
-          <div class="spinner"></div>
-        </div>
-      `)
+      </div>
+      <div id="overlay" style="display:none;">
+        <div class="spinner"></div>
+      </div>
+    `)
 
-      var index = Math.floor(Math.random() * data.length)
-      get_question(data[index].experiment_name)
+    var index = Math.floor(Math.random() * data.length)
+    get_question(data[index].experiment_name)
 
-      //get timestamp when viewer first sees pair
-      start = Date.now()
+    //get timestamp when viewer first sees pair
+    start = Date.now()
 
-      //set names according to data
-      //could speed up by only returning a single object, but this shouldn't be measurably different
-
-
-      if(Math.round(Math.random()) == 0){
-        $('#name1').text(data[index].name_1.first + ' ' + data[index].name_1.last)
-        $('#name2').text(data[index].name_2.first + ' ' + data[index].name_2.last)
-
-        //handle clicks on names
-        $('#name1_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_1, start, end, access_code)
-        });
-
-        $('#name2_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_2, start, end, access_code)
-        });
+    //set names according to data
+    //could speed up by only returning a single object, but this shouldn't be measurably different
 
 
-      } else{
-        $('#name2').text(data[index].name_1.first + ' ' + data[index].name_1.last)
-        $('#name1').text(data[index].name_2.first + ' ' + data[index].name_2.last)
+    if(Math.round(Math.random()) == 0){
+      $('#name1').text(data[index].name_1.first + ' ' + data[index].name_1.last)
+      $('#name2').text(data[index].name_2.first + ' ' + data[index].name_2.last)
 
-        //handle clicks on names
-        $('#name1_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_2, start, end, access_code)
-        });
+      //handle clicks on names
+      $('#name1_card').click(function(){
+        $('#overlay').fadeIn()
+        end = Date.now()
+        add_rating(data[index], data[index].name_1, start, end, access_code)
+      });
 
-        $('#name2_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_1, start, end, access_code)
-        });
-      }
-
-      //set matches remaining counter
-      $('#num_left').text('Matches Remaining: ' + data.length)
+      $('#name2_card').click(function(){
+        $('#overlay').fadeIn()
+        end = Date.now()
+        add_rating(data[index], data[index].name_2, start, end, access_code)
+      });
 
 
+    } else{
+      $('#name2').text(data[index].name_1.first + ' ' + data[index].name_1.last)
+      $('#name1').text(data[index].name_2.first + ' ' + data[index].name_2.last)
 
-      //handle arrow keys - just automate clicking process
-      $(document).keydown(function(e) {
-        switch(e.which) {
-          case 37: // left
-            $('#name1_card').click()
-          break;
+      //handle clicks on names
+      $('#name1_card').click(function(){
+        $('#overlay').fadeIn()
+        end = Date.now()
+        add_rating(data[index], data[index].name_2, start, end, access_code)
+      });
 
-          case 38: // up
-          break;
-
-          case 39: // right
-            $('#name2_card').click()
-          break;
-
-          default: return; // exit this handler for other keys
-        }
-
-        e.preventDefault(); // prevent the default action (scroll / move caret)
+      $('#name2_card').click(function(){
+        $('#overlay').fadeIn()
+        end = Date.now()
+        add_rating(data[index], data[index].name_1, start, end, access_code)
       });
     }
+
+    //set matches remaining counter
+    $('#num_left').text('Matches Remaining: ' + data.length)
+
+
+
+    //handle arrow keys - just automate clicking process
+    $(document).keydown(function(e) {
+      switch(e.which) {
+        case 37: // left
+          $('#name1_card').click()
+        break;
+
+        case 38: // up
+        break;
+
+        case 39: // right
+          $('#name2_card').click()
+        break;
+
+        default: return; // exit this handler for other keys
+      }
+
+      e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+  }
 
     }
   })
@@ -1949,7 +1511,7 @@ $(document).ready(function() {
 });
 
 
-  //push the selection back to django
+  //push the selection back to server
   function add_rating(dat, winner, start_time, end_time, access_code){
     //make sure the csrf token is passed along...should satisfy django security
     function getCookie(name) {

@@ -43,8 +43,8 @@ class get_progress_byuser_internal(APIView):
 		id = request.data['u_id']
 
 		my_res = Results.objects.filter(experiment_name = id)
-		raters = list(set(my_res.values_list('rater')))
-		raters_names = list(set(my_res.values_list('rater__first', 'rater__last')))
+		raters = list(my_res.values_list('rater').distinct())
+		raters_names = list(my_res.values_list('rater__first', 'rater__last').distinct())
 
 		pers = []
 		counter = 0
@@ -94,9 +94,14 @@ class add_exp_internal(APIView):
 class delete_people_internal(APIView):
 	permission_classes = (IsAuthenticated,)
 	def post(self, request, version):
-		People.objects.get(id = request.data['id']).delete()
 
-		return Response(status = 200)
+		check_exp = Experiment.objects.filter(names = request.data['id'])
+		if len(check_exp) == 0:
+			People.objects.get(id = request.data['id']).delete()
+			return Response(status = 200)
+
+		else:
+			return Response(status = 201)
 
 class delete_exp_internal(APIView):
 	permission_classes = (IsAuthenticated,)
