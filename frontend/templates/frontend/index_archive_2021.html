@@ -563,9 +563,7 @@ h5{
               }        
             }
 
-          $(".card").click(function(){     
-
-
+          $(".card").click(function(){            
             u_id = $(this).attr('data')
             $.ajax({
               url: 'api/v1/get_progress_byuser_internal/',
@@ -578,6 +576,7 @@ h5{
               },
 
                 success: function (data_3, textStatus, xhr){
+                  //console.log(data_3)
                   $("#user_modal_cards>.card").remove()
                   for(i = 0; i < data_3.length; i++){
                     first = data_3[i].first
@@ -702,9 +701,8 @@ h5{
                 </div>
               </form>
               <div class="alert alert-danger" id = "alert-req" role="alert"> Please provide all required information </div>
-              <div class="alert alert-danger" id = "alert-user-req" role="alert"> Must select 3 or more users</div>
-              <div class="alert alert-success" id = "alert-success" role="success"> Experiment added successfully </div>
-              <div class="alert alert-danger" id = "alert-dup" role="alert"> Experiment with this name already exists </div>
+              <div class="alert alert-success" id = "alert-success" role="success"> User added successfully </div>
+              <div class="alert alert-danger" id = "alert-dup" role="alert"> User already exists </div>
             </div>
             <div class="modal-footer">
             </div>
@@ -719,7 +717,6 @@ h5{
     $('#alert-req').hide()
     $('#alert-success').hide()
     $('#alert-dup').hide()
-    $('#alert-user-req').hide()
 
     t = $('#exp_table').DataTable({
         language: {
@@ -848,68 +845,6 @@ h5{
 
 
                   })
-
-                  $(".delete_btn").click(function(){
-          var id = $(this).attr('data')
-          $.ajax({
-            url: 'api/v1/delete_exp_internal/',
-            type: "POST",
-            data: {id:id},
-            beforeSend:function(xhr){
-              if(localStorage.token){
-                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-              }
-              return confirm("Are you sure you want to delete this experiment?");
-            },
-
-
-            success: function (data){
-              $.ajax({
-                url: 'api/v1/exp_internal/',
-                type: "GET",
-                dataType: "json",
-                beforeSend: function(xhr){
-                  if(localStorage.token){
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                  }
-                },
-
-                success: function (data){
-                  t.clear()
-                  for(var i = 0; i < data.length; i++){
-                    t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
-                  }
-
-                  $(".show_users_btn").click(function(){
-                    $('#view_users').click()
-
-                    var exp_id = $(this).attr('data')
-                    $.ajax({
-                      url: 'api/v1/user_code_view/',
-                      type: 'POST',
-                      data: {exp_id:exp_id},
-                      beforeSend: function(xhr){
-                        if(localStorage.token){
-                          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
-                        }
-                      },
-
-                      success: function(data){
-                        t2.clear()
-                        for(var i = 0; i < data.length; i++){
-                          t2.row.add([data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]]).draw()
-                        }
-                      }
-                    })
-
-
-                  })
-                }
-              })
-            }
-          })
-        })
                 }
               })
             }
@@ -997,24 +932,14 @@ h5{
             $('#alert-req').hide()
             $('#alert-success').hide()
             $('#alert-dup').hide()
-            $('#alert-user-req').hide()
             $('#alert-req').show()
             $('#alert-req').delay(2500).fadeOut('slow')
-
-          } else if(xhr.status == 202){
-            $('#alert-req').hide()
-            $('#alert-success').hide()
-            $('#alert-dup').hide()
-            $('#alert-user-req').show()
-            $('#alert-req').hide()
-            $('#alert-user-req').delay(2500).fadeOut('slow')
 
           } else{
             $('form').get(0).reset()
             $('#alert-req').hide()
             $('#alert-success').hide()
             $('#alert-dup').hide()
-            $('#alert-user-req').hide()
             $('#alert-success').show()
             $('#alert-success').delay(2500).fadeOut('slow')
 
@@ -1037,8 +962,7 @@ h5{
               success: function (data){
                 t.clear()
                 for(var i = 0; i < data.length; i++){
-                  t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                    '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
+                  t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                 }
 
                 $(".show_users_btn").click(function(){
@@ -1094,8 +1018,7 @@ h5{
                         success: function (data){
                           t.clear()
                           for(var i = 0; i < data.length; i++){
-                            t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-light show_users_btn btn-sm" type="button" ><i class="bi bi-box-arrow-up-right"></i></button>',
-                            '<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
+                            t.row.add([data[i].title, data[i].creator, data[i].names.length, data[i].question,'<button id = "delete_btn" data='+data[i].id+' onclick = "return false;" class="btn btn-danger delete_btn btn-sm" type="button" ><i class="bi bi-trash"></i></button>']).draw()
                           }
                           $(".show_users_btn").click(function(){
                             $('#view_users').click()
@@ -1118,25 +1041,17 @@ h5{
                                 }
                               }
                             })
+
+
                           })
                         }
                       })
                     }
                   })
                 })
-
-
               }
             })
           }
-        },
-        error: function (data){
-          $('#alert-req').hide()
-          $('#alert-success').hide()
-          $('#alert-dup').hide()
-          $('#alert-user-req').hide()
-          $('#alert-dup').show()
-          $('#alert-dup').delay(5000).fadeOut('slow')
         }
       })
     })
@@ -1663,7 +1578,7 @@ h5{
 
           $("#start_exp_now").click(function() {
             $('#overlay').fadeIn()
-            update_pair(access_code)
+            make_virtues_comments(access_code)
           });
 
         } else{
@@ -1698,260 +1613,468 @@ h5{
     })
   }
 
+  function add_virtue_comment(uuid, subject, does, virtue, comment, comment_2, access_code){
+    //make sure the csrf token is passed along...should satisfy django security
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+         }
+      }
+    });
 
-//hit api for matchup
-function update_pair(access_code){
+    //actually send the request with relevant info
+    $.ajax({
+      url: 'api/v1/add_virtue_comments/',
+      data:{
+        uuid: uuid,
+        subject_id: subject,
+        does: does,
+        virtue: virtue,
+        comment: comment,
+        comment_2: comment_2
+      },
+      type: 'POST',
+      content_type: 'application/json',
+      success: function (){
+        make_virtues_comments(access_code)
+
+        //trigger reload of the main pairs page - will automatically pull next pair
+        //update_pair(access_code)
+      }
+    })
+  }
+
+
+
+function make_virtues_comments(access_code){
+
+  //hit API to build comment section
   $.ajax({
-    url: 'api/v1/res?uuid=' + access_code,
+    url: 'api/v1/comments?uuid=' + access_code,
     type: "GET",
     dataType: "json",
 
     success: function (data){
-
-      if(data == ''){
-        $.ajax({
-          url: 'api/v1/res_closeness?uuid=' + access_code,
-          type: "GET",
-          dataType: "json",
-
-          success: function (data){
-            if(data.length == 0){
-              $('#overlay').fadeOut()
-              //go_to_comments(access_code)
-              //elo_survey(access_code)
-              $('.main').html(`
-                <div class = 'content'>
-                  <h2>Your ratings have been captured - thank you!</h2>
-                </div>
-              `)
-            } else{
-              $('.main').html(`
-              <div class = 'content'>
-                <h4 id = 'num_left'></h4>
-                <h4>Select the pair of circles that best describes your relationship with: <br><span id = 'question' style = 'color: red'></span></h4>
-                <div class="row justify-content-center">
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '01' class="card-img-top img-responsive" src = "{% static 'frontend/img/01_alt.png' %}">
-                    </div>
-                  </div>
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '02' class="card-img-top img-responsive" src = "{% static 'frontend/img/02_alt.png' %}">
-                    </div>
-                  </div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '03' class="card-img-top img-responsive" src = "{% static 'frontend/img/03_alt.png' %}">
-                    </div>
-                  </div>
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '04' class="card-img-top" src = "{% static 'frontend/img/04_alt.png' %}">
-                    </div>
-                  </div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '05' class="card-img-top" src = "{% static 'frontend/img/05_alt.png' %}">
-                    </div>
-                  </div>
-                  <div class="col-xs" id = 'spec_col'>
-                    <div class="card">
-                    <img id = '06' class="card-img-top" src = "{% static 'frontend/img/06_alt.png' %}">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="overlay" style="display:none;">
-                <div class="spinner"></div>
-              </div>
-
-            `)
-
-            $("#question").text(data[0].name.rank + ' ' + data[0].name.first + ' ' + data[0].name.last)
-
+      //shell html for the comment section
+      if(data.length == 0){
             $('#overlay').fadeOut()
+            //survey_splash(access_code)
+            //survey_splash(access_code)
+            //elo_survey(access_code)
+            update_pair(access_code);
 
-            //get timestamp when viewer first sees pair
-            start = Date.now()
-
-            //handle clicks on names
-            $('.card-img-top').click(function(){
-              $('#overlay').fadeIn()
-              $(window).scrollTop(0);
-              end = Date.now()
-              add_closeness_rating(data[0], data[0].name, this.id, start, end, access_code)
-              //add_rating(data[0], data[0].name_1, start, end, access_code)
-            });
-          }
-
-          }
-        })
-
-
-
-
-      } else if(data.length == 0){
-        $('#overlay').fadeOut()
-        go_to_comments(access_code)
+            // $('.main').html(`
+            // <div class = 'content'>
+            //   <h2>Your ratings have been captured - thank you!</h2>
+            // </div>
+            //`)
       } else{
-        $('.main').html(`
+      $('.main').html(`
         <div class = 'content'>
           <h4 id = 'num_left'></h4>
-          <br>
-          <h2 id = 'question'></h2>
-          <br><br>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="card" id = 'name1_card'>
-                <div class="card-body">
-                  <center><h4 class="card-title stretched-link" id = 'name1'></h4></center>
-                </div>
-              </div>
+
+          <h3 class = 'select_areas' id = 'cadet_name'></h3>
+          <form>
+            <div class="form-group select_areas">
+              <span class = 'cadet_name_again', style = 'margin-right: 10px; color:red'></span>
+              <select class="selectpicker" id = "does_picker">
+                <option>does</option>
+                <option>does not</option>
+              </select>
+              <select class="selectpicker" id = "virtue_picker">
+              </select>
             </div>
-            <div class="col-sm-6">
-              <div class="card" id = 'name2_card'>
-                <div class="card-body">
-                  <center><h4 class="card-title" id = 'name2'></h4></center>
-                </div>
-              </div>
+            <div class="form-group free_text_areas"  style = 'display:none'>
+              <label for="commentarea" id = 'first_comment'></label>
+              <textarea class="form-control" id="commentarea" rows="6"></textarea>
             </div>
+            <div class="form-group free_text_areas"  style = 'display:none'>
+              <label for="commentarea_2" id = 'second_comment'><h4>Please provide one constructive but respectful comment to help this teammate become a better leader</h4></label>
+              <textarea class="form-control" id="commentarea_2" rows="6"></textarea>
+            </div>
+            <div class = 'form-group free_text_areas' style = 'display:none'>
+              <button id = 'submit_comment' onclick = "return false;" class = 'btn btn-secondary' type = "button">Submit</button>
+            </div>
+            <div class = 'form-group select_areas'>
+              <button id = 'next_inputs' onclick = "return false;" class = 'btn btn-secondary' type = "button">Submit</button>
+            </div>
+          </form>
+          <div class="alert alert-danger" role="alert">
+            Please fill out all required fields
           </div>
         </div>
         <div id="overlay" style="display:none;">
           <div class="spinner"></div>
         </div>
+
       `)
 
-      var index = Math.floor(Math.random() * data.length)
-      get_question(data[index].experiment_name)
+      $('.alert').hide()
 
-      //get timestamp when viewer first sees pair
-      start = Date.now()
+      //add run for first cadet name provided
+      var q_txt = 'Please select the statement below that best describes the character of <span style="color:red">' + data[0].rank + ' ' + data[0].first + ' ' + data[0].last + ".</span>"
+      $("#cadet_name").html(q_txt)
+      $(".cadet_name_again").html(data[0].rank + ' ' + data[0].first + ' ' + data[0].last)
 
-      //set names according to data
-      //could speed up by only returning a single object, but this shouldn't be measurably different
+      //randomly generate virtue order
+      var virtue_options = ['reliably treat others with respect', 'reliably helps the group', 'reliably shares information, ideas, and perspectives','reliably work hard to accomplish the mission', 'reliably stand up for their principles, regardless of personal cost']
+
+      function shuffle(array) {
+          let counter = array.length;
+
+          // While there are elements in the array
+          while (counter > 0) {
+              // Pick a random index
+              let index = Math.floor(Math.random() * counter);
+
+              // Decrease counter by 1
+              counter--;
+
+              // And swap the last element with it
+              let temp = array[counter];
+              array[counter] = array[index];
+              array[index] = temp;
+          }
+
+          return array;
+      }
+      var virtue_options_ordered = shuffle(virtue_options)
+      for(i = 0; i < virtue_options_ordered.length; i++){
+        $("#virtue_picker").append("<option>"+virtue_options_ordered[i]+"</option>")
+      }
 
 
-      if(Math.round(Math.random()) == 0){
-        $('#name1').text(data[index].name_1.first + ' ' + data[index].name_1.last)
-        $('#name2').text(data[index].name_2.first + ' ' + data[index].name_2.last)
+      //$(".free_text_areas").hide()
+      //after clicking the first submit, hide the dropdown stuff and show free text fields
+      $("#next_inputs").click(function(){
+        $(".free_text_areas").show()
+        $(".select_areas").hide()
 
-        //handle clicks on names
-        $('#name1_card').click(function(){
+        var first_comment_txt = "<h4> Please provide an example that illustrates why <span style='color:red'>" + data[0].rank + " " +data[0].first+" " +data[0].last + '</span> ' + $("#does_picker").val() + ' ' + $("#virtue_picker").val() + "</h4>"
+
+        $("#first_comment").html(first_comment_txt)
+      })
+
+
+
+
+      //add each name to the dropdown
+      //for(i = 0; i < data.length; i++){
+        //$("#name_picker").append("<option value = '"+data[i].id+"'>"+data[i].rank + " " +data[i].first+" " +data[i].last+"</option>")
+      //}
+      //$("#name_picker").selectpicker('refresh')
+      //$("#does_picker").selectpicker('refresh')
+      //$("#virtue_picker").selectpicker('refresh')
+
+      //$('#name_picker').select2({minimumResultsForSearch: Infinity});
+      $('#does_picker').select2({minimumResultsForSearch: Infinity});
+      $('#virtue_picker').select2({minimumResultsForSearch: Infinity});
+
+
+
+      $('#overlay').fadeOut()
+
+      $('#submit_comment').click(function(){
+
+        subject = data[0].id
+        uuid = access_code
+        comment = $("#commentarea").val()
+        comment_2 = $("#commentarea_2").val()
+        does = $("#does_picker").val()
+        virtue = $("#virtue_picker").val()
+
+
+        if(comment.length == 0 | comment_2.length == 0){
+          $('.alert').show()
+        } else{
           $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_1, start, end, access_code)
-        });
-
-        $('#name2_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_2, start, end, access_code)
-        });
+          add_virtue_comment(uuid, subject, does, virtue, comment, comment_2, access_code)
+          //reinitialize comments screen
+         // make_virtues_comments(access_code)
+        }
+      });
 
 
-      } else{
-        $('#name2').text(data[index].name_1.first + ' ' + data[index].name_1.last)
-        $('#name1').text(data[index].name_2.first + ' ' + data[index].name_2.last)
+    }
+  }
+  });
 
-        //handle clicks on names
-        $('#name1_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_2, start, end, access_code)
-        });
+}
 
-        $('#name2_card').click(function(){
-          $('#overlay').fadeIn()
-          end = Date.now()
-          add_rating(data[index], data[index].name_1, start, end, access_code)
+
+  //hit api for matchup
+  function update_pair(access_code){
+    $.ajax({
+      url: 'api/v1/res?uuid=' + access_code,
+      type: "GET",
+      dataType: "json",
+
+      success: function (data){
+
+        if(data == ''){
+          $.ajax({
+            url: 'api/v1/res_closeness?uuid=' + access_code,
+            type: "GET",
+            dataType: "json",
+
+            success: function (data){
+              if(data.length == 0){
+                $('#overlay').fadeOut()
+                //go_to_comments(access_code)
+                //elo_survey(access_code)
+                $('.main').html(`
+                  <div class = 'content'>
+                    <h2>Your ratings have been captured - thank you!</h2>
+                  </div>
+                `)
+              } else{
+                $('.main').html(`
+                <div class = 'content'>
+                  <h4 id = 'num_left'></h4>
+                  <h4>Select the pair of circles that best describes your relationship with: <br><span id = 'question' style = 'color: red'></span></h4>
+                  <div class="row justify-content-center">
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '01' class="card-img-top img-responsive" src = "{% static 'frontend/img/01_alt.png' %}">
+                      </div>
+                    </div>
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '02' class="card-img-top img-responsive" src = "{% static 'frontend/img/02_alt.png' %}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '03' class="card-img-top img-responsive" src = "{% static 'frontend/img/03_alt.png' %}">
+                      </div>
+                    </div>
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '04' class="card-img-top" src = "{% static 'frontend/img/04_alt.png' %}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '05' class="card-img-top" src = "{% static 'frontend/img/05_alt.png' %}">
+                      </div>
+                    </div>
+                    <div class="col-xs" id = 'spec_col'>
+                      <div class="card">
+                      <img id = '06' class="card-img-top" src = "{% static 'frontend/img/06_alt.png' %}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="overlay" style="display:none;">
+                  <div class="spinner"></div>
+                </div>
+
+              `)
+
+              $("#question").text(data[0].name.rank + ' ' + data[0].name.first + ' ' + data[0].name.last)
+
+              $('#overlay').fadeOut()
+
+              //get timestamp when viewer first sees pair
+              start = Date.now()
+
+              //handle clicks on names
+              $('.card-img-top').click(function(){
+                $('#overlay').fadeIn()
+                $(window).scrollTop(0);
+                end = Date.now()
+                add_closeness_rating(data[0], data[0].name, this.id, start, end, access_code)
+                //add_rating(data[0], data[0].name_1, start, end, access_code)
+              });
+            }
+
+            }
+          })
+
+
+
+
+        } else if(data.length == 0){
+          $('#overlay').fadeOut()
+          go_to_comments(access_code)
+        } else{
+          $('.main').html(`
+          <div class = 'content'>
+            <h4 id = 'num_left'></h4>
+            <br>
+            <h2 id = 'question'></h2>
+            <br><br>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="card" id = 'name1_card'>
+                  <div class="card-body">
+                    <center><h4 class="card-title stretched-link" id = 'name1'></h4></center>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card" id = 'name2_card'>
+                  <div class="card-body">
+                    <center><h4 class="card-title" id = 'name2'></h4></center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="overlay" style="display:none;">
+            <div class="spinner"></div>
+          </div>
+        `)
+
+        var index = Math.floor(Math.random() * data.length)
+        get_question(data[index].experiment_name)
+
+        //get timestamp when viewer first sees pair
+        start = Date.now()
+
+        //set names according to data
+        //could speed up by only returning a single object, but this shouldn't be measurably different
+
+
+        if(Math.round(Math.random()) == 0){
+          $('#name1').text(data[index].name_1.first + ' ' + data[index].name_1.last)
+          $('#name2').text(data[index].name_2.first + ' ' + data[index].name_2.last)
+
+          //handle clicks on names
+          $('#name1_card').click(function(){
+            $('#overlay').fadeIn()
+            end = Date.now()
+            add_rating(data[index], data[index].name_1, start, end, access_code)
+          });
+
+          $('#name2_card').click(function(){
+            $('#overlay').fadeIn()
+            end = Date.now()
+            add_rating(data[index], data[index].name_2, start, end, access_code)
+          });
+
+
+        } else{
+          $('#name2').text(data[index].name_1.first + ' ' + data[index].name_1.last)
+          $('#name1').text(data[index].name_2.first + ' ' + data[index].name_2.last)
+
+          //handle clicks on names
+          $('#name1_card').click(function(){
+            $('#overlay').fadeIn()
+            end = Date.now()
+            add_rating(data[index], data[index].name_2, start, end, access_code)
+          });
+
+          $('#name2_card').click(function(){
+            $('#overlay').fadeIn()
+            end = Date.now()
+            add_rating(data[index], data[index].name_1, start, end, access_code)
+          });
+        }
+
+        //set matches remaining counter
+        $('#num_left').text('Matches Remaining: ' + data.length)
+
+
+
+        //handle arrow keys - just automate clicking process
+        $(document).keydown(function(e) {
+          switch(e.which) {
+            case 37: // left
+              $('#name1_card').click()
+            break;
+
+            case 38: // up
+            break;
+
+            case 39: // right
+              $('#name2_card').click()
+            break;
+
+            default: return; // exit this handler for other keys
+          }
+
+          e.preventDefault(); // prevent the default action (scroll / move caret)
         });
       }
 
-      //set matches remaining counter
-      $('#num_left').text('Matches Remaining: ' + data.length)
+      }
+    })
+  }
+
+  //listen for uuid to start the whole process
+  $(document).ready(function() {
+    $("#start_exp").click(function() {
+
+      $('#alert-blank').hide()
+      $('#alert-invalid').hide()
 
 
+      if($("#password").val().length > 0){
 
-      //handle arrow keys - just automate clicking process
-      $(document).keydown(function(e) {
-        switch(e.which) {
-          case 37: // left
-            $('#name1_card').click()
-          break;
+        $.ajax({
+          url: 'api/v1/res?uuid=' + $("#password").val(),
+          type: "GET",
+          dataType: "json",
 
-          case 38: // up
-          break;
+          success: function (data){
 
-          case 39: // right
-            $('#name2_card').click()
-          break;
+            if(data.length == 0){
 
-          default: return; // exit this handler for other keys
-        }
-
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-      });
-    }
-
-    }
-  })
-}
-
-//listen for uuid to start the whole process
-$(document).ready(function() {
-  $("#start_exp").click(function() {
-
-    $('#alert-blank').hide()
-    $('#alert-invalid').hide()
-
-
-    if($("#password").val().length > 0){
-
-      $.ajax({
-        url: 'api/v1/res?uuid=' + $("#password").val(),
-        type: "GET",
-        dataType: "json",
-
-        success: function (data){
-
-          if(data.length == 0){
-
-            $.ajax({
-              url: 'api/v1/res_closeness?uuid=' + $("#password").val(),
-              type: "GET",
-              dataType: "json",
-              success: function(data){
-                var ex_type = 'closeness'
-                //pre_survey($("#password").val(), ex_type);
-                update_pair($("#password").val())
-              },
-              error: function(data){
-                $('#alert-invalid').show()
-              }
-            })
-          } else{
-            var ex_type = 'elo'
-            //pre_survey($("#password").val(), ex_type);
-            update_pair($("#password").val())
+              $.ajax({
+                url: 'api/v1/res_closeness?uuid=' + $("#password").val(),
+                type: "GET",
+                dataType: "json",
+                success: function(data){
+                  var ex_type = 'closeness'
+                  //pre_survey($("#password").val(), ex_type);
+                  update_pair($("#password").val())
+                },
+                error: function(data){
+                  $('#alert-invalid').show()
+                }
+              })
+            } else{
+              var ex_type = 'elo'
+              //pre_survey($("#password").val(), ex_type);
+              update_pair($("#password").val())
+            }
+          },
+          error: function(){
+            $('#alert-invalid').show()
           }
-        },
-        error: function(){
-          $('#alert-invalid').show()
-        }
 
-      })
+        })
 
-    } else{
-      $('#alert-blank').show()
-    }
+      } else{
+        $('#alert-blank').show()
+      }
+    });
   });
-});
 
 
   //push the selection back to django
@@ -2003,6 +2126,184 @@ $(document).ready(function() {
       }
     })
   }
+
+
+  function elo_survey(uuid) {
+    $('.main').html(`
+      <div class = 'content'>
+        <form action="">
+        <label id = 's1' class="statement">I believe this peer evaluation is less time consuming than the peer PDR.</label>
+        <fieldset id = 'q1'>
+          <ul class='likert'>
+            <li>
+              <input type="radio" name="q1" value="strong_disagree">
+              <label>Strongly disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q1" value="disagree">
+              <label>Disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q1" value="neutral">
+              <label>Neutral</label>
+            </li>
+            <li>
+              <input type="radio" name="q1" value="agree">
+              <label>Agree</label>
+            </li>
+            <li>
+              <input type="radio" name="q1" value="strong_agree">
+              <label>Strongly agree</label>
+            </li>
+          </ul>
+        </fieldset>
+        <label id = 's2' class="statement">I am more likely to provide candid feedback using this system than the peer PDR.</label>
+        <fieldset id = 'q2'>
+          <ul class='likert'>
+            <li>
+              <input type="radio" name="q2" value="strong_disagree">
+              <label>Strongly disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q2" value="disagree">
+              <label>Disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q2" value="neutral">
+              <label>Neutral</label>
+            </li>
+            <li>
+              <input type="radio" name="q2" value="agree">
+              <label>Agree</label>
+            </li>
+            <li>
+              <input type="radio" name="q2" value="strong_agree">
+              <label>Strongly agree</label>
+            </li>
+          </ul>
+        </fieldset>
+        <label id = 's3' class="statement">I believe I will receive more meaningful insights from this system than the peer PDR.</label>
+        <fieldset id = 'q3'>
+          <ul class='likert'>
+            <li>
+              <input type="radio" name="q3" value="strong_disagree">
+              <label>Strongly disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q3" value="disagree">
+              <label>Disagree</label>
+            </li>
+            <li>
+              <input type="radio" name="q3" value="neutral">
+              <label>Neutral</label>
+            </li>
+            <li>
+              <input type="radio" name="q3" value="agree">
+              <label>Agree</label>
+            </li>
+            <li>
+              <input type="radio" name="q3" value="strong_agree">
+              <label>Strongly agree</label>
+            </li>
+          </ul>
+        </fieldset>
+        <label id = 's4' class="statement">Please provide any comments or concerns you may have about this peer evaluation system.</label>
+        <textarea class="form-control" id="q4" rows="6"></textarea>
+        <button id = "submit_sus" onclick = "return false;" class="btn btn-secondary float-right" type="button">Submit</button>
+      </form>
+
+      <br><br>
+      <div class="alert alert-danger" id = "alert-invalid" role="alert">
+            Please provide an answer to each question.
+          </div>
+    </div>
+    <br><br>
+
+    <div id="overlay" style="display:none;">
+      <div class="spinner"></div>
+    </div>
+    `)
+    $('#overlay').fadeOut()
+    $('#alert-invalid').hide()
+
+    $("#submit_sus").click(function(){
+
+
+
+      out = {
+        q1: $("#s1").text(),
+        r1: $("input[name='q1']:checked"). val(),
+        q2: $("#s2").text(),
+        r2: $("input[name='q2']:checked"). val(),
+        q3: $("#s3").text(),
+        r3: $("input[name='q3']:checked"). val(),
+        q4: $("#s4").text(),
+        r4: $("#q4").val(),
+        uuid: uuid
+      }
+
+      if(out['r1'] == undefined | out['r2'] == undefined | out['r3'] == undefined){
+        $('#alert-invalid').show()
+      } else{
+
+        //console.log(out)
+
+        $('#overlay').fadeIn()
+
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+          return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+           return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+               if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                   xhr.setRequestHeader("X-CSRFToken", csrftoken);
+             }
+          }
+        });
+
+        //actually send the request with relevant info
+        $.ajax({
+          url: 'api/v1/add_post_results/',
+          data: out,
+          type: 'POST',
+          content_type: 'application/json',
+          success: function (){
+            //console.log('done!')
+
+            //trigger reload of the main pairs page - will automatically pull next pair
+            //update_pair(access_code)
+            //elo_survey_2(uuid)
+          $('#overlay').fadeOut()
+          $('.main').html(`
+            <div class = 'content'>
+              <h2>Your ratings have been captured - thank you!</h2>
+            </div>
+          `)
+
+          }
+        })
+
+      }
+
+    })
+  }
+
 
 
 

@@ -71,6 +71,8 @@ class add_exp_internal(APIView):
 
 		if title == '' or creator == '' or names == '' or question == '':
 			return Response(status = 201)
+		elif len(names) < 3:
+			return Response(status = 202)
 		else:
 			people = People.objects.filter(pk__in = names)
 
