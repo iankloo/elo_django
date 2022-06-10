@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
-from .serializers import ExperimentSerializer, ResultsSerializer, PeopleSerializer, Results_ClosenessSerializer, ExperimentClosenessSerializer, NewUserSerializer
-from .models import Experiment, Results, People, Comments, Results_Closeness, Experiment_Closeness, Comments_Constructive
+from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, Results_ClosenessSerializer, ExperimentClosenessSerializer, NewUserSerializer
+from .models import Experiment, Results, People, Comments, Results_Closeness, Experiment_Closeness, Comments_Constructive, Final_Results
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +10,58 @@ from itertools import chain
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveAPIView
 from django.db.models import CharField, Value, Count
+import pandas as pd
+import itertools
+from django.http import HttpResponse, JsonResponse
+
+def get_elo_scores(exp_id, num_runs = 500):
+    
+    def elo_match(ra, rb, winner = 'a', k = 32):
+        exp_a = 1 / (1 + (10 ** ((rb - ra) / 400)))
+        exp_b = 1 / (1 + (10 ** ((ra - rb) / 400)))
+        if winner == 'a':
+            fa = ra + (k * (1 - exp_a))
+            fb = rb + (k * (0 - exp_b))
+        else:
+            fa = ra + (k * (0 - exp_a))
+            fb = rb + (k * (1 - exp_b))
+
+        return [fa, fb]
+    
+    my_exp = Experiment.objects.get(id = exp_id)
+    my_res = Results.objects.filter(experiment_name = my_exp.id)
+    df = pd.DataFrame.from_records(my_res.values('name_1', 'name_2','winner', 'rater'))
+    df['loser'] = df.name_1
+    df.loser[df.loser == df.winner] = df.name_2
+    df.drop(['name_1', 'name_2'], axis = 1, inplace = True)
+    
+    all_runs = list()
+    for i in range(num_runs):
+        #shuffle data
+        df = df.sample(frac = 1)
+        #starting scores
+        running_scores = {x: 1000 for x in set(pd.concat([df['winner'], df['loser']]))}
+        #set scores based on wins/losses
+        for index, row in df.iterrows():
+            elo_update = elo_match(running_scores[row.winner], running_scores[row.loser])
+            running_scores[row.winner] = elo_update[0]
+            running_scores[row.loser] = elo_update[1]
+
+        all_runs.append(pd.DataFrame(running_scores.items(), columns = ['name','score']))
+
+    all_runs = pd.concat(all_runs, ignore_index = True)
+    avg_scores = all_runs.groupby('name').mean()
+    avg_scores.reset_index(drop = False, inplace = True)
+    
+    #real_names = []
+    #for index, row in avg_scores.iterrows():
+    #    real_names.append(str(People.objects.get(id = row['name'])))
+
+    #avg_scores['name'] = real_names
+    
+    return(avg_scores)
+
+
 
 class UserAPIView(RetrieveAPIView):
 	permission_classes = (IsAuthenticated,)
@@ -17,6 +69,39 @@ class UserAPIView(RetrieveAPIView):
 
 	def get_object(self):
 		return self.request.user
+
+
+
+class get_final_results(APIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+		my_id = request.data.getlist('id')
+		res_exists = Final_Results.objects.filter(experiment_name = my_id[0])
+
+		#if results not calculated yet, calculate them
+		if len(res_exists) == 0:
+			output = get_elo_scores(exp_id = my_id[0], num_runs = 10000)
+			exp = Experiment.objects.get(id = my_id[0])
+			for index, row in output.iterrows():
+				fin_res = Final_Results()
+				fin_res.experiment_name = exp
+				fin_res.names = People.objects.get(pk = row['name'])
+				fin_res.score = row.score
+
+				fin_res.save()
+
+			res_exists = Final_Results.objects.filter(experiment_name = my_id[0])
+			out = Final_ResultsSerializer(res_exists.order_by('-score'), many = True)
+			return JsonResponse(out.data, status = 201, safe = False)
+
+
+		else:
+			out = Final_ResultsSerializer(res_exists.order_by('-score'), many = True)
+			return JsonResponse(out.data, status = 201, safe = False)
+
+
+		
 
 
 #build this progress checking view...

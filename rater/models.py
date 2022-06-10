@@ -5,6 +5,7 @@ from django.dispatch import receiver
 import itertools
 
 
+
 c_types = (
 	('Standard', 'Standard'),
 	('Virtues', 'Virtues'),
@@ -68,6 +69,18 @@ class People(models.Model):
 	class Meta:
 		verbose_name_plural = "people"
 		unique_together = ['first','middle','last','rank','email']
+
+
+
+class Final_Results(models.Model):
+	experiment_name = models.ForeignKey(Experiment, on_delete = models.CASCADE)
+	names = models.ForeignKey(People, on_delete = models.CASCADE)
+	score = models.DecimalField(max_digits = 30, decimal_places = 5)
+
+	def __str__(self):
+		return str(self.experiment_name) + ": " + str(self.names)
+
+
 
 
 

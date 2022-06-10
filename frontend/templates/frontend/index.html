@@ -231,6 +231,28 @@ h5{
   color: #fff;
 }
 
+
+.loader {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.stack.imgur.com/FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
+body.loading .loader {
+    overflow: hidden;   
+}
+body.loading .loader {
+    display: block;
+}
+
+
   </style>
 
 
@@ -273,6 +295,8 @@ h5{
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 
+<!--chart js-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -365,8 +389,12 @@ h5{
         $("#prog_tracker").click(function(){
           progress_view()
         })
+        $("#results_manager").click(function(){
+          results_view()
+        })
 
-        user_view()
+        //user_view()
+        results_view()
       },
       error: function (data){
         $('.main').html(`
@@ -439,8 +467,12 @@ h5{
               $("#prog_tracker").click(function(){
                 progress_view()
               })
+              $("#results_manager").click(function(){
+                results_view()
+              })
 
-              user_view()
+              //user_view()
+              results_view()
             },
             error: function (data){
               $('#alert-badpass').show()
@@ -457,33 +489,134 @@ h5{
         <h2>Results</h2>
         <p>This page allows you to see the results of all of your experiments.</p>
         <br>
-        <div id = 'completed_exps'>
-          <h3>Completed Experiments</h3>
+        <select class="dropdown_list" id="exp_drop" name="exp_drop" style = 'width: 100%'>
+          <option></option>
+        </select>
+        <br>
+        <br>
+        <div class="chart-container" style="display: block; margin: 0 auto; height:25vh; width:50vw">
+          
         </div>
       </div>
 
-      <button id = "open_user_modal" onclick = "return false;" class="invisible btn btn-dark" type="button" style='width:25%;' data-toggle="modal" data-target="#user_comp_modal" >Open Modal</button>
 
-      <!-- Modal -->
-      <div class="modal fade" id="user_comp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">User Progress Tracker</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body" id='user_modal_cards'>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-dark" data-dismiss="modal">close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <div class="loader"></div>
     `)
+
+    $body = $("body");
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+
+    $('.dropdown_list').select2({placeholder: "Please select an experiment"});
+
+    $('#exp_drop').on('select2:select', function (e) {
+
+      $("#myChart").remove()
+      $(".chart-container").append('<canvas id="myChart"></canvas>')
+
+      id = $('#exp_drop').find(':selected').val()
+      
+      $.ajax({
+        url: 'api/v1/get_final_results/',
+        type: "POST",
+        data: {id},
+        beforeSend: function(xhr){
+          if(localStorage.token){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+          }
+        },
+
+        success: function (data, textStatus, xhr){
+
+          var colors = []
+          for(i = 0; i < data.length; i++){
+            score_transform = data[i].score - 1000
+            if(score_transform <= 0){
+              colors.push('#F22301')
+            } else{
+              colors.push('#3C9AB2')
+            }
+          }
+
+          plot_data = {
+            labels: data.map(a => a.names),
+            datasets: [{
+              barPercentage: .95,
+              categoryPercentage: 1,
+              label: '',
+              data: data.map(a => a.score - 1000),
+              backgroundColor: colors
+            }]
+          }
+
+
+          const config = {
+            type: 'bar',
+            data: plot_data,
+            options: {
+              scales: {
+                x: {
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, ticks) {
+                            return value + 1000;
+                        }
+                    }
+                }
+              },
+              indexAxis: 'y',
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                title: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.parsed.x + 1000;
+                    }
+                  }
+                }
+              }
+            },
+          };
+
+          const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+          );
+
+
+        }
+      })
+    });
+
+
+    $.ajax({
+      url: 'api/v1/exp_internal/',
+      type: "GET",
+      dataType: "json",
+      beforeSend: function(xhr){
+        if(localStorage.token){
+          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+        }
+      },
+
+      success: function (data){
+        //console.log(data)
+        for(i = 0; i < data.length; i++){
+          $("#exp_drop").append("<option value='"+data[i].id+"' >"+data[i].title+" - Created By: "+data[i].creator+" on "+data[i].date +"</option>")
+        }
+      }
+    })
+
+
+
   }
 
 
