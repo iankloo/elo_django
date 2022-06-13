@@ -1,0 +1,218 @@
+.navbar-brand{
+  padding-left:20px;
+}
+.content {
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 20px
+}
+.input-group {
+  /*margin-top: 20px;*/
+  width: 100%;
+  max-width: 350px;
+}
+.form-control {
+  box-shadow: none!important;
+}
+.form-control:focus {
+  border-color: #545b62 !important;
+}
+.card-img-top { cursor: pointer; border: solid 2px transparent; }
+.card-img-top:hover {border-color: black;}
+
+.card-body { cursor: pointer; }
+.card-body:hover {background: #f0f0f0;}
+
+#spec_col{
+  max-width: 51%;
+}
+#overlay {
+  background: #ffffff;
+  color: #666666;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  float: left;
+  text-align: center;
+  padding-top: 25%;
+  opacity: .80;
+}
+.spinner {
+    margin: 0 auto;
+    height: 64px;
+    width: 64px;
+    animation: rotate 0.8s infinite linear;
+    border: 5px solid firebrick;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+form .statement {
+  display:block;
+  font-size: 1em;
+  font-weight: bold;
+  /*padding: 30px 0 0 4.25%;*/
+  /*margin-bottom:10px;*/
+}
+form .likert {
+  list-style:none;
+  /*width:100%;*/
+  margin:0;
+  padding:0 0 20px;
+  display:block;
+  border-bottom:2px solid #efefef;
+}
+form .likert:last-of-type {border-bottom:0;}
+form .likert:before {
+  content: '';
+  position:relative;
+  top:11px;
+  left:9.5%;
+  display:block;
+  background-color:#efefef;
+  height:4px;
+  width:78%;
+}
+form .likert li {
+  display:inline-block;
+  width:19%;
+  text-align:center;
+  vertical-align: top;
+}
+form .likert li input[type=radio] {
+  display:block;
+  position:relative;
+  top:0;
+  left:50%;
+  margin-left:-6px;
+
+}
+form .likert li label {width:100%;}
+h2{
+  font-size: max(2vw, 25px) !important;
+}
+h3{
+  font-size: max(1.5vw, 20px) !important;
+}
+
+h4{
+  font-size: max(1.5vw, 18px) !important;
+}
+
+h5{
+  font-size: max(1vw, 14px) !important;
+}
+.select2-container--bootstrap{
+  display: inline-block !important;
+}
+@media (max-width: 600px) {
+  /* CSS that should be displayed if width is equal to or less than 800px goes here */
+  .content {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 10px
+  }
+
+  @media (max-width: 600px) {
+    .likert {
+      font-size: .8em;
+    }
+  }
+}
+.navbar-right{
+  position: fixed;
+  top: 15px;
+  right: 50px;/*pixels away from the right of the navbar*/
+  color: #fff;
+}
+.navbar-right:hover{
+  color: #fff;
+  font-weight:bold;
+  text-decoration: none !important;
+}
+.form-group.required .control-label:after {
+    color: #d00;
+    content: "*";
+    position: absolute;
+    margin-left: 4px;
+    top:0px;
+}
+.table th, td {
+  text-align: center !important;
+}
+.btn-sm {
+  height: 2.35em;
+  font-size: .65rem !important;
+  text-align: center !important;
+}
+.dataTables_wrapper { font-size: .9em }
+.dataTables_paginate>span>a {
+    margin-bottom: 0px !important;
+    padding: 1px 5px !important;
+}
+.dataTables_paginate>a {
+    margin-bottom: 0px !important;
+    padding: 1px 5px !important;
+}
+#exp_modal>.modal-dialog {
+  max-width: 750px;
+}
+#view_exp_modal>.modal-dialog {
+  max-width: 750px;
+}
+.search-input{
+  width: 100%;
+}
+.custom-header{
+  background: #6f757b;
+  color: #fff;
+}
+#overlay{ 
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height:100%;
+  padding-top: 30%;
+  display: none;
+  background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.spinner {
+  width: 8em;
+  height: 8em;
+  border: 1em #ddd solid;
+  border-top: 1em #2e93e6 solid;
+  border-radius: 50%;
+  animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+.is-hide{
+  display:none;
+}
+.overlay_text{
+  color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 2em;
+}
