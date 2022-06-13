@@ -7,6 +7,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="{% static 'frontend/img/favicon.ico' %}"/>
+
+    <!--JQuery - used for interaction with server throughout-->
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/popper.min.js' %}"></script>
+
+    <!-- Bootstrap - used for style throughout-->
+    <link rel="stylesheet" href="{% static 'frontend/css/bootstrap.min.css' %}"/>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/bootstrap.min.js' %}"></script>
+    <!--Bootstrap icons-->
+    <link rel="stylesheet" href="{% static 'frontend/css/bootstrap-icons-1.3.0/bootstrap-icons.css' %}"/>
+
+    <!-- Select2 - used this for the search/select boxes-->
+    <link rel="stylesheet" href="{% static 'frontend/css/select2.min.css' %}"/>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/select2.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'frontend/css/select2-bootstrap.min.css' %}"/>
+
+    <!--dataTables - used for displaying data throughout-->
+    <link rel="stylesheet" href="{% static 'frontend/css/dataTables.min.css' %}"/>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/dataTables.min.js' %}"></script>
+
+    <!--export buttons for table-->
+    <link rel="stylesheet" href="{% static 'frontend/css/dataTables.buttons.min.css' %}"/>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/dataTables.buttons.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jzip.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/buttons.html5.min.js' %}"></script>
+
+    <!--multiselect-->
+    <link rel="stylesheet" href="{% static 'frontend/css/multi-select.css' %}"/>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.multi-select.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.quicksearch.js' %}"></script>
+
+    <!--chart js-->
+    <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/chart.js' %}"></script>
+
     <title>Elo Peer Rater</title>
   </head>
 
@@ -298,48 +332,6 @@ body.loading .loader {
 
   </style>
 
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/css/bootstrap-select.css">
-
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
-
-<!--data.table-->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-
-
-<!--icons-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-
-
-<!--multiselect-->
-<link rel="stylesheet" href="{% static 'frontend/css/multi-select.css' %}"/>
-<script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.multi-select.js' %}"></script>
-<script type="text/javascript" charset="utf8" src="{% static 'frontend/js/jquery.quicksearch.js' %}"></script>
-
-<!--export buttons for table-->
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
-
-<!--chart js-->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
