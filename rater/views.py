@@ -53,12 +53,6 @@ def get_elo_scores(exp_id, num_runs = 500):
     avg_scores = all_runs.groupby('name').mean()
     avg_scores.reset_index(drop = False, inplace = True)
     
-    #real_names = []
-    #for index, row in avg_scores.iterrows():
-    #    real_names.append(str(People.objects.get(id = row['name'])))
-
-    #avg_scores['name'] = real_names
-    
     return(avg_scores)
 
 
@@ -81,7 +75,7 @@ class get_final_results(APIView):
 
 		#if results not calculated yet, calculate them
 		if len(res_exists) == 0:
-			output = get_elo_scores(exp_id = my_id[0], num_runs = 10000)
+			output = get_elo_scores(exp_id = my_id[0], num_runs = 1000)
 			exp = Experiment.objects.get(id = my_id[0])
 			for index, row in output.iterrows():
 				fin_res = Final_Results()

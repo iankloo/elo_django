@@ -232,7 +232,7 @@ h5{
 }
 
 
-.loader {
+/*.loader {
     display:    none;
     position:   fixed;
     z-index:    1000;
@@ -244,13 +244,56 @@ h5{
                 url('http://i.stack.imgur.com/FhHRx.gif') 
                 50% 50% 
                 no-repeat;
-}
-body.loading .loader {
+}*/
+/*body.loading .loader {
     overflow: hidden;   
 }
 body.loading .loader {
     display: block;
+}*/
+
+#overlay{ 
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height:100%;
+  padding-top: 30%;
+  display: none;
+  background: rgba(0,0,0,0.6);
 }
+.cv-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.spinner {
+  width: 8em;
+  height: 8em;
+  border: 1em #ddd solid;
+  border-top: 1em #2e93e6 solid;
+  border-radius: 50%;
+  animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+.is-hide{
+  display:none;
+}
+
+
+.overlay_text{
+  color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 2em;
+}
+
 
 
   </style>
@@ -300,7 +343,7 @@ body.loading .loader {
 
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" href="/">Elo Peer Rater</a>
+    <a class="navbar-brand" id="navbar-main" href="/">Elo Peer Rater</a>
     <a class="navbar-item navbar-right" id="login_toggle" href="#">Admin Login</a>
   </nav>
 
@@ -369,14 +412,15 @@ body.loading .loader {
         $("#prog_tracker").remove()
         $("#results_manager").remove()
 
-        $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href='#'>Logout</a>")
+        $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href='/'>Logout</a>")
         $(".navbar").append('<a class="nav-link navbar-brand" id="user_manager" href="#" style="font-size:1rem;padding-left: 30px">User Manager</a>')
         $(".navbar").append('<a class="nav-link navbar-brand" id="exp_manager" href="#" style="font-size:1rem;padding-left: 0px">Experiment Manager</a>')
         $(".navbar").append('<a class="nav-link navbar-brand" id="prog_tracker" href="#" style="font-size:1rem;padding-left: 0px">Progress Tracker</a>')
         $(".navbar").append('<a class="nav-link navbar-brand" id="results_manager" href="#" style="font-size:1rem;padding-left: 0px">Results</a>')
         $("#logout").click(function(){
           localStorage.removeItem('token')
-          user_view()
+          //$("#navbar-main").click()
+          //user_view()
         })
 
         //listen for button presses in header -- need smarter way to do this, isn't working because everything routes back through splash again
@@ -393,8 +437,8 @@ body.loading .loader {
           results_view()
         })
 
-        //user_view()
-        results_view()
+        user_view()
+        //results_view()
       },
       error: function (data){
         $('.main').html(`
@@ -447,14 +491,14 @@ body.loading .loader {
               $("#prog_tracker").remove()
               $("#results_manager").remove()
 
-              $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href='#'>Logout</a>")
+              $(".navbar").append("<a class='navbar-item navbar-right' id='logout' href='/'>Logout</a>")
               $(".navbar").append('<a class="nav-link navbar-brand" id="user_manager" href="#" style="font-size:1rem;padding-left: 30px">User Manager</a>')
               $(".navbar").append('<a class="nav-link navbar-brand" id="exp_manager" href="#" style="font-size:1rem;padding-left: 0px">Experiment Manager</a>')
               $(".navbar").append('<a class="nav-link navbar-brand" id="prog_tracker" href="#" style="font-size:1rem;padding-left: 0px">Progress Tracker</a>')
               $(".navbar").append('<a class="nav-link navbar-brand" id="results_manager" href="#" style="font-size:1rem;padding-left: 0px">Results</a>')
               $("#logout").click(function(){
                 localStorage.removeItem('token')
-                user_view()
+                //$("#navbar-main").click()
               })
 
               //listen for button presses in header
@@ -471,8 +515,8 @@ body.loading .loader {
                 results_view()
               })
 
-              //user_view()
-              results_view()
+              user_view()
+              //results_view()
             },
             error: function (data){
               $('#alert-badpass').show()
@@ -488,26 +532,30 @@ body.loading .loader {
       <div class = 'content'>
         <h2>Results</h2>
         <p>This page allows you to see the results of all of your experiments.</p>
+        <p>Select a an experiment to see the final point distribution for the team.</p>
+        <p>All people start with 1,000 points, so any point total below 1,000 suggests a generally negative review.  Similarly, any point total above 1,000 suggests a generally positive review.</p>
+        <p>Point comparisons between experiments are NOT meaningful so please do not compare absolute point values between experiments.  Instead, point totals should be evaluated relative to others in their experiment.</p>
+        <p>Only completed experiments will populate in the dropdown box below.  If you do not see an experiment that you expected to be here, please go to the progress tracker and confirm it is fully complete.</p>
+        <p>The first time you select a completed experiment will trigger the code that generates the final point totals.  This might take a few seconds to a few minutes.  After that, it retrieving results will be nearly instantaneous.</p>
         <br>
         <select class="dropdown_list" id="exp_drop" name="exp_drop" style = 'width: 100%'>
           <option></option>
         </select>
         <br>
         <br>
-        <div class="chart-container" style="display: block; margin: 0 auto; height:25vh; width:50vw">
-          
+        <div id="dl_button" style="float:right;"></div>
+        <div class="chart-container" style="display: block; margin: 0 auto; height:25vh; width:50vw"></div>
+        
+
+
+      <div id="overlay">
+        <div class = 'overlay_text'>Please wait, this could take a minute...</div>
+        <div class="cv-spinner">
+          <span class="spinner"></span>
         </div>
       </div>
-
-
-      <div class="loader"></div>
     `)
 
-    $body = $("body");
-    $(document).on({
-        ajaxStart: function() { $body.addClass("loading");    },
-         ajaxStop: function() { $body.removeClass("loading"); }    
-    });
 
     $('.dropdown_list').select2({placeholder: "Please select an experiment"});
 
@@ -526,9 +574,54 @@ body.loading .loader {
           if(localStorage.token){
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
           }
+          $("#overlay").fadeIn(100);　
         },
 
         success: function (data, textStatus, xhr){
+
+          $("#dl_button").append('<div><button class="btn btn-secondary" id="download">CSV Data <i class="bi bi-download"></i></button><div>')
+
+          $("#download").click(function(){
+            const csvString = [
+              [
+                "Name",
+                "Score"
+              ],
+              ...data.map(item => [
+                item.names,
+                item.score
+              ])
+            ]
+             .map(e => e.join(",")) 
+             .join("\n");
+
+            var download = function(content, fileName, mimeType) {
+              var a = document.createElement('a');
+              mimeType = mimeType || 'application/octet-stream';
+
+              if (navigator.msSaveBlob) { // IE10
+                navigator.msSaveBlob(new Blob([content], {
+                  type: mimeType
+                }), fileName);
+              } else if (URL && 'download' in a) { //html5 A[download]
+                a.href = URL.createObjectURL(new Blob([content], {
+                  type: mimeType
+                }));
+                a.setAttribute('download', fileName);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              } else {
+                location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+              }
+            }
+
+            download(csvString, 'score_report.csv', 'text/csv;encoding:utf-8');
+        })
+          
+
+
+          $("#overlay").fadeOut(100);　
 
           var colors = []
           for(i = 0; i < data.length; i++){
@@ -592,7 +685,7 @@ body.loading .loader {
           );
 
 
-        }
+        },
       })
     });
 
@@ -606,17 +699,28 @@ body.loading .loader {
           xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
         }
       },
-
       success: function (data){
-        //console.log(data)
-        for(i = 0; i < data.length; i++){
-          $("#exp_drop").append("<option value='"+data[i].id+"' >"+data[i].title+" - Created By: "+data[i].creator+" on "+data[i].date +"</option>")
-        }
+        let ids = data.map(a => a.id);
+          $.ajax({
+          url: 'api/v1/get_progress_internal/',
+          type: "POST",
+          data: {ids:ids},
+          beforeSend: function(xhr){
+            if(localStorage.token){
+              xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
+            }
+          },
+          success: function (data2){
+            //console.log(data2)
+            for(i = 0; i < data.length; i++){
+              if(data2[i] == 100){
+                $("#exp_drop").append("<option value='"+data[i].id+"' >"+data[i].title+" - Created By: "+data[i].creator+" on "+data[i].date +"</option>")
+              }
+            }
+          }
+        })
       }
     })
-
-
-
   }
 
 
