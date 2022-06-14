@@ -56,7 +56,6 @@
     <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/functions/get_question.js' %}"></script>
     <script type="text/javascript" charset="utf8" src="{% static 'frontend/js/functions/update_pair.js' %}"></script>
 
-
     <title>Elo Peer Rater</title>
   </head>
 
@@ -69,94 +68,31 @@
     <div class = 'main'></div>
 
     <script>
-      if (!String.prototype.format) {
-        String.prototype.format = function() {
-          var args = arguments;
-          return this.replace(/{(\d+)}/g, function(match, number) { 
-            return typeof args[number] != 'undefined'
-              ? args[number]
-              : match
-            ;
-          });
-        };
-      }
-
-      $.fn.select2.defaults.set( "theme", "bootstrap" );
-
-      var urlParams = new URLSearchParams(window.location.search);
-      var code = urlParams.get('code')
-      if(code == null){
-        splash_page();
-      } else{
-        $.ajax({
-          url: 'api/v1/res?uuid=' + code,
-          type: "GET",
-          dataType: "json",
-
-          success: function (data){
-            if(data.length == 0){
-              var ex_type = 'closeness'
-            } else{
-              var ex_type = 'elo'
-            }
-
-            pre_survey(code, ex_type)
-          }
-        })
-      }
-
-      $('#login_toggle').click(function(){
-        admin_splash()
-      })
-
-      //listen for uuid to start the whole process
+      //startup procedure
       $(document).ready(function() {
-        $("#start_exp").click(function() {
 
-          $('#alert-blank').hide()
-          $('#alert-invalid').hide()
+        //check for access code in URL, if its there,  go straight to the elo ratings
+        //if not, go to page that asks for code or admin login
+        var urlParams = new URLSearchParams(window.location.search);
+        var code = urlParams.get('code')
+        if(code == null){
+          splash_page();
+        } else{
+          $.ajax({
+            url: 'api/v1/res?uuid=' + code,
+            type: "GET",
+            dataType: "json",
+            success: function (data){
+              update_pair(code)
+            }
+          })
+        }
 
+        //listener so when admin login is clicked, go to admin pages
+        $('#login_toggle').click(function(){
+          admin_splash()
+        })
 
-          if($("#password").val().length > 0){
-
-            $.ajax({
-              url: 'api/v1/res?uuid=' + $("#password").val(),
-              type: "GET",
-              dataType: "json",
-
-              success: function (data){
-
-                if(data.length == 0){
-
-                  $.ajax({
-                    url: 'api/v1/res_closeness?uuid=' + $("#password").val(),
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data){
-                      var ex_type = 'closeness'
-                      //pre_survey($("#password").val(), ex_type);
-                      update_pair($("#password").val())
-                    },
-                    error: function(data){
-                      $('#alert-invalid').show()
-                    }
-                  })
-                } else{
-                  var ex_type = 'elo'
-                  //pre_survey($("#password").val(), ex_type);
-                  update_pair($("#password").val())
-                }
-              },
-              error: function(){
-                $('#alert-invalid').show()
-              }
-
-            })
-
-          } else{
-            $('#alert-blank').show()
-          }
-        });
       });
     </script>
   </body>

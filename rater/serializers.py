@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Experiment, Results, People, Results_Closeness, Experiment_Closeness, Final_Results
+from .models import Experiment, Results, People, Final_Results
 from django.contrib.auth import get_user_model
 
 
@@ -27,12 +27,6 @@ class ExperimentSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-class ExperimentClosenessSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Experiment_Closeness
-		fields = '__all__'
-
-
 class PeopleSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = People
@@ -40,7 +34,6 @@ class PeopleSerializer(serializers.ModelSerializer):
 
 class Final_ResultsSerializer(serializers.ModelSerializer):
 	names = serializers.StringRelatedField(read_only= True)
-
 
 	class Meta:
 		model = Final_Results
@@ -54,14 +47,4 @@ class ResultsSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Results
-		fields = '__all__'
-
-
-
-class Results_ClosenessSerializer(serializers.ModelSerializer):
-	name = PeopleSerializer()
-	rater = PeopleSerializer()
-
-	class Meta:
-		model = Results_Closeness
 		fields = '__all__'

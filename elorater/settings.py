@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'frontend',
     'django_extensions',
-    'surveyor',
     'rest_framework_simplejwt',
 ]
 

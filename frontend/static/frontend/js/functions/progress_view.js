@@ -104,7 +104,6 @@ function progress_view(){
 
               success: function (data_3, textStatus, xhr){
                 $("#user_modal_cards>.card").remove()
-                console.log(data_3)
                 for(i = 0; i < data_3.length; i++){
                   first = data_3[i].first
                   last = data_3[i].last

@@ -11,7 +11,7 @@ function splash_page(){
         </div>
       </div>
       <div class="alert alert-danger" id = "alert-blank" role="alert">
-          Please fill out all required fields
+          Please enter your access code
       </div>
       <div class="alert alert-danger" id = "alert-invalid" role="alert">
         Invalid access code
@@ -20,4 +20,28 @@ function splash_page(){
   `)
   $('#alert-blank').hide()
   $('#alert-invalid').hide()
+
+  $("#start_exp").click(function() {
+
+    $('#alert-blank').hide()
+    $('#alert-invalid').hide()
+
+    if($("#password").val().length > 0){
+
+      $.ajax({
+        url: 'api/v1/res?uuid=' + $("#password").val(),
+        type: "GET",
+        dataType: "json",
+        success: function (data){
+          update_pair($("#password").val())
+        },
+        error: function(){
+          $('#alert-invalid').show()
+        }
+      })
+
+    } else{
+      $('#alert-blank').show()
+    }
+  });
 }

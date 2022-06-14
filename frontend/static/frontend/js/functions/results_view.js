@@ -182,7 +182,6 @@ function results_view(){
           }
         },
         success: function (data2){
-          //console.log(data2)
           for(i = 0; i < data.length; i++){
             if(data2[i] == 100){
               $("#exp_drop").append("<option value='"+data[i].id+"' >"+data[i].title+" - Created By: "+data[i].creator+" on "+data[i].date +"</option>")

@@ -11,5 +11,4 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name = 'token_refresh'),
     path('api/user/', UserAPIView.as_view(), name = 'user'),
     re_path('api/(?P<version>(v1|v2))/', include('rater.urls')),
-    re_path('api/(?P<version>(v1|v2))/', include('surveyor.urls')),
 ]

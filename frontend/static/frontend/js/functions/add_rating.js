@@ -40,8 +40,6 @@ function add_rating(dat, winner, start_time, end_time, access_code){
     type: 'POST',
     content_type: 'application/json',
     success: function (){
-      //console.log('done!')
-
       //trigger reload of the main pairs page - will automatically pull next pair
       update_pair(access_code)
     }
