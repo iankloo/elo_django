@@ -1,6 +1,10 @@
 function experiment_view(){
   //basic html including placeholders for the table and the edit/delete modals
   $('.main').html(`
+    <div id="overlay" style="display: block;">
+      <div class="spinner"></div>
+    </div>
+
     <div class = 'content'>
       <h2>Experiment Manager</h2>
       <br>
@@ -97,6 +101,10 @@ function experiment_view(){
             <div class="alert alert-danger" id = "alert-dup" role="alert"> Experiment with this name already exists </div>
           </div>
           <div class="modal-footer">
+            <div id="overlay2" style="display:none; margin-left:auto; margin-right:auto;">
+              <div class="spinner"></div>
+              <div>Building Experiment, please wait...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -146,6 +154,8 @@ function experiment_view(){
       }
     },
     success: function (data){
+      $('.content').fadeIn()
+      $('#overlay').fadeOut()
       //clear old stuff from table and populate it
       t.clear()
       for(var i = 0; i < data.length; i++){
@@ -266,7 +276,9 @@ function experiment_view(){
   //note: i use status 201 and 202 to prompt the user if they didn't provide all required fields or if they
   //didn't provide enough users, respectively.  The 500 error that triggers the error() function is for duplicate
   //titles, which aren't allowed.
-  $("#add_exp_db").click(function() {
+  $("#add_exp_db").click(function() {        
+    $('#overlay2').fadeIn()
+
     var title = $("#title").val()
     var creator = $("#creator").val()
     var names = $(".ms-selection>.ms-list>.ms-selected").map(function(){return $(this).attr('data')}).get()
@@ -284,6 +296,7 @@ function experiment_view(){
       },
 
       success: function (data, textStatus, xhr){
+        $('#overlay2').fadeOut()
         if(xhr.status == 201){
           $('#alert-req').hide()
           $('#alert-success').hide()
@@ -313,6 +326,7 @@ function experiment_view(){
         }
       },
       error: function (data){
+        $('#overlay2').fadeOut()
         $('#alert-req').hide()
         $('#alert-success').hide()
         $('#alert-dup').hide()

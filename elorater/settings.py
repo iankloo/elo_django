@@ -21,10 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'test'
+SECRET_KEY = 'sxc1h5*i*ym6we$$2z1i#xh=%xoeesq@rm%pb9m(1smnje#6l8'
+
+#remake secret key for production with:
+# from django.core.management.utils import get_random_secret_key
+# print(get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,28 +88,28 @@ WSGI_APPLICATION = 'elorater.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 #local
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'elo-app-db',
-#         'USER': 'elo-app-admin',
-#         'PASSWORD': 'arpadchess111$$$',
-#         'HOST': 'tcp:elo-app-db.database.windows.net',
-#         'PORT': '1433',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'MARS_Connection': 'True',
-#         },
-#     },
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': 'elo-app-db',
+        'USER': 'elo-app-admin',
+        'PASSWORD': 'arpadchess111$$$',
+        'HOST': 'tcp:elo-app-db.database.windows.net',
+        'PORT': '1433',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'MARS_Connection': 'True',
+        },
+    },
+}
 
 
 
@@ -147,22 +151,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 #local
-STATIC_URL = '/static/'
-PROJECT_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+# PROJECT_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
+# STATIC_URL = '/static/'
 
 #server
-# DEFAULT_FILE_STORAGE = 'elorater.custom_azure.AzureMediaStorage'
-# STATICFILES_STORAGE = 'elorater.custom_azure.AzureStaticStorage'
+DEFAULT_FILE_STORAGE = 'elorater.custom_azure.AzureMediaStorage'
+STATICFILES_STORAGE = 'elorater.custom_azure.AzureStaticStorage'
 
-# STATIC_LOCATION = "static"
-# MEDIA_LOCATION = "media"
+STATIC_LOCATION = "static"
+MEDIA_LOCATION = "media"
 
-# AZURE_ACCOUNT_NAME = "elotesting"
-# AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-# STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-# MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+AZURE_ACCOUNT_NAME = "elotesting"
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 
 
 

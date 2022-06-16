@@ -16,7 +16,7 @@ function update_pair(access_code){
           `)
       } else{
         $('.main').html(`
-          <div class = 'content'>
+          <div class = 'content' style="display: none;">
             <h4 id = 'num_left'></h4>
             <br>
             <h2 id = 'question'></h2>
@@ -38,7 +38,7 @@ function update_pair(access_code){
               </div>
             </div>
           </div>
-          <div id="overlay" style="display:none;">
+          <div id="overlay" style="display: block;">
             <div class="spinner"></div>
           </div>
         `)
@@ -51,6 +51,8 @@ function update_pair(access_code){
           dataType: "json",
 
           success: function (q_data){
+            $('#overlay').fadeOut()
+            $('.content').fadeIn()
             $('#question').text(q_data[0].question)
 
             //get timestamp when viewer first sees pair

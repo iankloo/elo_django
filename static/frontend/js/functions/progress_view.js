@@ -1,6 +1,6 @@
 function progress_view(){
   $('.main').html(`
-    <div class = 'content'>
+    <div class = 'content' style="display: none;">
       <h2>Progress Tracker</h2>
       <p>This page allows you to see the progress of all of your experiments.</p>
       <br>
@@ -34,6 +34,11 @@ function progress_view(){
       </div>
     </div>
 
+
+    <div id="overlay" style="display: block;">
+      <div class="spinner"></div>
+    </div>
+
   `)
 
   $.ajax({
@@ -61,6 +66,10 @@ function progress_view(){
       },
 
         success: function (data_2, textStatus, xhr){
+
+          $('#overlay').fadeOut()
+          $('.content').fadeIn()
+
           for(i = 0; i < data.length; i++){
             let id = data[i].id
             let title = data[i].title
@@ -90,7 +99,7 @@ function progress_view(){
 
         $(".card").click(function(){     
 
-
+          $('#overlay').fadeIn()
           u_id = $(this).attr('data')
           $.ajax({
             url: 'api/v1/get_progress_byuser_internal/',
@@ -103,6 +112,7 @@ function progress_view(){
             },
 
               success: function (data_3, textStatus, xhr){
+                $('#overlay').fadeOut()
                 $("#user_modal_cards>.card").remove()
                 for(i = 0; i < data_3.length; i++){
                   first = data_3[i].first

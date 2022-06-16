@@ -17,11 +17,16 @@ function splash_page(){
         Invalid access code
       </div>
     </div>
+
+    <div id="overlay" style="display: none;">
+      <div class="spinner"></div>
+    </div>
   `)
   $('#alert-blank').hide()
   $('#alert-invalid').hide()
 
   $("#start_exp").click(function() {
+    $('#overlay').fadeIn()
 
     $('#alert-blank').hide()
     $('#alert-invalid').hide()
@@ -36,6 +41,7 @@ function splash_page(){
           update_pair($("#password").val())
         },
         error: function(){
+          $('#overlay').fadeOut()
           $('#alert-invalid').show()
         }
       })

@@ -122,16 +122,13 @@ class get_progress_byuser_internal(APIView):
 		id = request.data['u_id']
 
 		my_res = Results.objects.filter(experiment_name = id)
-		raters = list(my_res.values_list('rater').distinct())
-		raters_names = list(my_res.values_list('rater__first', 'rater__last').distinct())
+		raters_names = list(my_res.values_list('rater', 'rater__first', 'rater__last').distinct())
 
 		pers = []
-		counter = 0
-		for r in raters:
-			rater_sub = my_res.filter(rater = r)
+		for r in raters_names:
+			rater_sub = my_res.filter(rater = r[0])
 			per = round((rater_sub.filter(winner__isnull = False).count() / len(rater_sub)) * 100, 2)
-			pers.append({'first': raters_names[counter][0], 'last': raters_names[counter][1], 'per': per})
-			counter += 1
+			pers.append({'first': r[1], 'last': r[2], 'per': per})
 
 		return Response(pers, status = 200)
 
