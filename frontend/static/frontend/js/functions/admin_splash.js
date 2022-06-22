@@ -47,6 +47,10 @@ function admin_splash(){
     },
     error: function (data){
       $('.main').html(`
+        <div id="overlay" style="display: none;">
+          <div class="spinner"></div>
+        </div>
+
         <div class = 'content'>
           <h2>Admin Login</h2>
 
@@ -75,6 +79,7 @@ function admin_splash(){
       });
 
       $("#login_btn").click(function() {
+        $('#overlay').fadeIn()
         var user = $("#admin_id").val()
         var password = $("#password").val()
 
@@ -84,6 +89,8 @@ function admin_splash(){
           data: {username:user, password:password},
 
           success: function (data){
+            $('#overlay').fadeOut()
+
             access_token = data.access
             refresh_token = data.refresh
 
@@ -124,6 +131,8 @@ function admin_splash(){
             //results_view()
           },
           error: function (data){
+            $('#overlay').fadeOut()
+
             $('#alert-badpass').show()
           }
         })

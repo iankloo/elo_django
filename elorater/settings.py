@@ -88,28 +88,28 @@ WSGI_APPLICATION = 'elorater.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 #local
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'elo-app-db',
-        'USER': 'elo-app-admin',
-        'PASSWORD': 'arpadchess111$$$',
-        'HOST': 'tcp:elo-app-db.database.windows.net',
-        'PORT': '1433',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'MARS_Connection': 'True',
-        },
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': 'elo-app-db',
+#         'USER': 'elo-app-admin',
+#         'PASSWORD': 'arpadchess111$$$',
+#         'HOST': 'tcp:elo-app-db.database.windows.net',
+#         'PORT': '1433',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'MARS_Connection': 'True',
+#         },
+#     },
+# }
 
 
 
