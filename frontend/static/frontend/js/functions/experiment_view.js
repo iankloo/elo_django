@@ -89,7 +89,29 @@ function experiment_view(){
                   <label>Users rate self?</label>
                 </div>
               </div>
-              <div class="form-group col-md-12 required">
+              <div class="form-group col-md-12 required" style="margin-bottom: 0px">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="make_comments">
+                  <label>Free Text Comments?</label>
+                </div>
+              </div>
+              <div class="form-group col-md-12 required comment_options" style="margin-left: 25px; margin-bottom: 0px">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" name="comment_loc" type="radio" value="" id="comments_at_beginning" checked>
+                  <label style="margin-bottom: 0px">Comments at beginning</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" name="comment_loc" type="radio" value="" id="comments_at_end">
+                  <label style="margin-bottom: 0px">Comments at end</label>
+                </div>
+              </div>
+              <div class="form-group col-md-12 required comment_options" style="margin-left: 25px">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="comments_required">
+                  <label>Require users to comment on all teammates?</label>
+                </div>
+              </div>
+              <div class="form-group col-md-12 required" style = "margin-top: 1rem">
                 <label class = 'control-label' for="my-select">Select Users</label>
                 <center>
                   <select id='user_search' multiple='multiple'>
@@ -124,6 +146,15 @@ function experiment_view(){
   $('#alert-success').hide()
   $('#alert-dup').hide()
   $('#alert-user-req').hide()
+  //also hide the extra comment buttons until comments are enabled
+  $('.comment_options').hide()
+  $('#make_comments').click(function() {
+    if($(this).is(":checked")) {
+      $('.comment_options').show()
+    } else{
+      $('.comment_options').hide()
+    }
+  });
 
   //setup tables - one for main page, one for users in the edit screens
   t = $('#exp_table').DataTable({
@@ -291,11 +322,14 @@ function experiment_view(){
     var question = $("#question").val()
     var email = $("#email").val()
     var rate_self = $("#rate_self").prop('checked')
+    var make_comments = $('#make_comments').prop('checked')
+    var comments_at_beginning = $('#comments_at_beginning').prop('checked')
+    var require_comments = $('#comments_required').prop('checked')
 
     $.ajax({
       url: 'api/v1/add_exp_internal/',
       type: "POST",
-      data: {title:title, creator:creator, names:names, question:question, email:email, rate_self:rate_self},
+      data: {title:title, creator:creator, names:names, question:question, email:email, rate_self:rate_self, make_comments:make_comments, comments_at_beginning:comments_at_beginning, require_comments:require_comments},
       beforeSend: function(xhr){
         if(localStorage.token){
           xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)

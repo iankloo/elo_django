@@ -38,14 +38,25 @@ function splash_page(){
         type: "GET",
         dataType: "json",
         success: function (data){
-          update_pair($("#password").val())
+          //determine if we should go to comments instead
+          $.ajax({
+            url: 'api/v1/exp?exp_id=' + data[0].experiment_name,
+            type: "GET",
+            dataType: "json",
+            success: function(data2){
+              if(data2[0].make_comments == true & data2[0].comments_at_end == false){
+                comment_view(data[0].experiment_name)
+              } else{
+                update_pair($("#password").val())
+              }
+            }
+          })
         },
         error: function(){
           $('#overlay').fadeOut()
           $('#alert-invalid').show()
         }
       })
-
     } else{
       $('#alert-blank').show()
     }

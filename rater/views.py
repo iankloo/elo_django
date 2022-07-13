@@ -149,6 +149,25 @@ class add_exp_internal(APIView):
 		else:
 			rate_self = False
 
+		make_comments = request.data['make_comments']
+		if make_comments == 'true':
+			make_comments = True
+		else:
+			make_comments = False
+
+		comments_at_end = request.data['comments_at_beginning']
+		if comments_at_end == 'true':
+			comments_at_end = False
+		else:
+			comments_at_end = True
+
+		comments_required = request.data['require_comments']
+		if comments_required == 'true':
+			comments_required = True
+		else:
+			comments_required = False
+
+
 		if title == '' or creator == '' or names == '' or question == '':
 			return Response(status = 201)
 		elif len(names) < 3:
@@ -161,6 +180,10 @@ class add_exp_internal(APIView):
 			ex.creator = creator
 			ex.question = question
 			ex.rate_self = rate_self
+			if make_comments == True:
+				ex.make_comments = make_comments
+				ex.comments_at_end = comments_at_end
+				ex.comments_required = comments_required
 			ex.save()
 			for p in people:
 				ex.names.add(p)
@@ -343,28 +366,28 @@ class ResultsView(generics.ListAPIView):
 		return queryset
 
 
-# class CommentView(generics.ListAPIView):
-# 	serializer_class = PeopleSerializer
+class CommentView(generics.ListAPIView):
+	serializer_class = PeopleSerializer
 
-# 	def get_queryset(self):
-# 		unique_id = self.request.query_params.get('uuid', None)
+	def get_queryset(self):
+		unique_id = self.request.query_params.get('uuid', None)
 
-# 		queryset = Results.objects.filter(uuid = unique_id)
-# 		rater = queryset[0].rater
-# 		sub = queryset[0].experiment_name
+		queryset = Results.objects.filter(uuid = unique_id)
+		rater = queryset[0].rater
+		sub = queryset[0].experiment_name
 
-# 		n1 = queryset.values_list('name_1',flat = True).distinct()
-# 		n2 = queryset.values_list('name_2',flat = True).distinct()
+		n1 = queryset.values_list('name_1',flat = True).distinct()
+		n2 = queryset.values_list('name_2',flat = True).distinct()
 
-# 		test = set(chain(n1, n2))
-# 		again = People.objects.filter(pk__in = test)
+		test = set(chain(n1, n2))
+		again = People.objects.filter(pk__in = test)
 
-# 		already_commented = Comments.objects.filter(experiment_name = sub, rater_name = rater)
-# 		a_c_people = already_commented.values_list('subject_name')
+		already_commented = Comments.objects.filter(experiment_name = sub, rater_name = rater)
+		a_c_people = already_commented.values_list('subject_name')
 
-# 		final = again.exclude(pk__in = a_c_people)
+		final = again.exclude(pk__in = a_c_people)
 
-# 		return final
+		return final
 
 
 @permission_classes((permissions.AllowAny,))
@@ -443,30 +466,30 @@ class add_exp_external(APIView):
 		return Response(status = 200)
 
 
-# @permission_classes((permissions.AllowAny,))
-# class add_comments(APIView):
-# 	def post(self, request, version):
+@permission_classes((permissions.AllowAny,))
+class add_comments(APIView):
+	def post(self, request, version):
 
-# 		uuid = request.POST['uuid']
-# 		#rater_id = request.POST['rater_id']
-# 		subject_id = request.POST['subject_id']
-# 		comment = request.POST['comment']
+		uuid = request.POST['uuid']
+		#rater_id = request.POST['rater_id']
+		subject_id = request.POST['subject_id']
+		comment = request.POST['comment']
 
-# 		r = Results.objects.filter(uuid = uuid)
+		r = Results.objects.filter(uuid = uuid)
 
-# 		#p = People.objects.get(pk = r[0].rater)
-# 		e = r[0].experiment_name
-# 		rater = r[0].rater
+		#p = People.objects.get(pk = r[0].rater)
+		e = r[0].experiment_name
+		rater = r[0].rater
 
-# 		subject = People.objects.get(pk = subject_id)
+		subject = People.objects.get(pk = subject_id)
 
-# 		com = Comments()
-# 		com.experiment_name = e
-# 		com.rater_name = rater
-# 		com.subject_name = subject
-# 		com.comment = comment
+		com = Comments()
+		com.experiment_name = e
+		com.rater_name = rater
+		com.subject_name = subject
+		com.comment = comment
 
-# 		com.save()
+		com.save()
 
-# 		return Response(status = 200)
+		return Response(status = 200)
 
