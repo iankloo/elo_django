@@ -143,6 +143,11 @@ class add_exp_internal(APIView):
 		creator = request.data['creator']
 		names = request.data.getlist('names[]') #this is weird, but how you have to retrieve the list from AJAX
 		question = request.data['question']
+		rate_self = request.data['rate_self'] #returns 'true' or 'false'
+		if rate_self == 'true':
+			rate_self = True
+		else:
+			rate_self = False
 
 		if title == '' or creator == '' or names == '' or question == '':
 			return Response(status = 201)
@@ -155,6 +160,7 @@ class add_exp_internal(APIView):
 			ex.title = title
 			ex.creator = creator
 			ex.question = question
+			ex.rate_self = rate_self
 			ex.save()
 			for p in people:
 				ex.names.add(p)

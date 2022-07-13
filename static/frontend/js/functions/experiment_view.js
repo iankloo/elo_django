@@ -90,6 +90,11 @@ function experiment_view(){
                   </select>
                 </center>
               </div>
+              <div class="form-check col-md-12 required">
+                <input class="form-check-input" type="checkbox" value="" id="rate_self">
+                  Users rate self?
+                </label>
+              </div>
               <input type="text" class="form-control" id="id" placeholder="id">
               <div class="form-group col-md-12">
                 <button id = "add_exp_db" onclick = "return false;" class="btn btn-dark" type="button" style='width:100%;'>Add Experiment</button>
@@ -101,6 +106,10 @@ function experiment_view(){
             <div class="alert alert-danger" id = "alert-dup" role="alert"> Experiment with this name already exists </div>
           </div>
           <div class="modal-footer">
+            <div id="overlay2" style="display:none; margin-left:auto; margin-right:auto;">
+              <div class="spinner"></div>
+              <div>Building Experiment, please wait...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -273,7 +282,7 @@ function experiment_view(){
   //didn't provide enough users, respectively.  The 500 error that triggers the error() function is for duplicate
   //titles, which aren't allowed.
   $("#add_exp_db").click(function() {        
-    $('#overlay').fadeIn()
+    $('#overlay2').fadeIn()
 
     var title = $("#title").val()
     var creator = $("#creator").val()
@@ -292,7 +301,7 @@ function experiment_view(){
       },
 
       success: function (data, textStatus, xhr){
-        $('#overlay').fadeOut()
+        $('#overlay2').fadeOut()
         if(xhr.status == 201){
           $('#alert-req').hide()
           $('#alert-success').hide()
@@ -322,7 +331,7 @@ function experiment_view(){
         }
       },
       error: function (data){
-        $('#overlay').fadeOut()
+        $('#overlay2').fadeOut()
         $('#alert-req').hide()
         $('#alert-success').hide()
         $('#alert-dup').hide()

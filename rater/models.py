@@ -22,6 +22,7 @@ class Experiment(models.Model):
 	)
 	question = models.CharField(max_length = 200)
 	per_complete = models.CharField(blank = True, null = True, default = 0, max_length = 30)
+	rate_self = models.BooleanField(default = False)
 
 	def __str__(self):
 		return self.title + " - " + str(self.date)
@@ -112,25 +113,44 @@ def build_pairwise_shell(sender, **kwargs):
 	instance = kwargs.pop('instance', None)
 	exp = Experiment.objects.get(pk = instance.pk)
 
-	n = exp.names.all()
-	pairs = list(itertools.combinations(n, 2))
-	if(pairs != []):
-		for name in n:
-			#filter to everyone that isn't you
-			test = [p for p in pairs if name not in p]
-			my_uuid = uuid.uuid4()
+	if exp.rate_self == False:
+		n = exp.names.all()
+		pairs = list(itertools.combinations(n, 2))
+		if(pairs != []):
+			for name in n:
+				#filter to everyone that isn't you
+				test = [p for p in pairs if name not in p]
+				my_uuid = uuid.uuid4()
 
-			#add each pairwise rating
-			for t in test:
-				obj = Results()
-				obj.name_1 = t[0]
-				obj.name_2 = t[1]
-				obj.rater = name
-				obj.experiment_name = instance
-				obj.uuid = my_uuid
+				#add each pairwise rating
+				for t in test:
+					obj = Results()
+					obj.name_1 = t[0]
+					obj.name_2 = t[1]
+					obj.rater = name
+					obj.experiment_name = instance
+					obj.uuid = my_uuid
 
-				print(type(t[0]))
-				obj.save()
+					obj.save()
+	else:
+		n = exp.names.all()
+		pairs = list(itertools.combinations(n, 2))
+		if(pairs != []):
+			for name in n:
+				#filter to everyone that isn't you
+				test = [p for p in pairs]
+				my_uuid = uuid.uuid4()
+
+				#add each pairwise rating
+				for t in test:
+					obj = Results()
+					obj.name_1 = t[0]
+					obj.name_2 = t[1]
+					obj.rater = name
+					obj.experiment_name = instance
+					obj.uuid = my_uuid
+
+					obj.save()
 
 
 #not using these currently...

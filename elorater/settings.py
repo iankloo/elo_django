@@ -28,7 +28,7 @@ SECRET_KEY = 'sxc1h5*i*ym6we$$2z1i#xh=%xoeesq@rm%pb9m(1smnje#6l8'
 # print(get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 

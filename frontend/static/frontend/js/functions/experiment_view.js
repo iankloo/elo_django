@@ -84,6 +84,12 @@ function experiment_view(){
                 <input type="text" class="form-control" id="question" placeholder="">
               </div>
               <div class="form-group col-md-12 required">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="rate_self">
+                  <label>Users rate self?</label>
+                </div>
+              </div>
+              <div class="form-group col-md-12 required">
                 <label class = 'control-label' for="my-select">Select Users</label>
                 <center>
                   <select id='user_search' multiple='multiple'>
@@ -284,11 +290,12 @@ function experiment_view(){
     var names = $(".ms-selection>.ms-list>.ms-selected").map(function(){return $(this).attr('data')}).get()
     var question = $("#question").val()
     var email = $("#email").val()
+    var rate_self = $("#rate_self").prop('checked')
 
     $.ajax({
       url: 'api/v1/add_exp_internal/',
       type: "POST",
-      data: {title:title, creator:creator, names:names, question:question, email:email},
+      data: {title:title, creator:creator, names:names, question:question, email:email, rate_self:rate_self},
       beforeSend: function(xhr){
         if(localStorage.token){
           xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token)
