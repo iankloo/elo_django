@@ -14,7 +14,7 @@ function results_view(){
       </select>
       <br>
       <br>
-      <div id="dl_button" style="float:right;"></div>
+      <div id="dl_button" style="float:left;"></div>
       <div class="chart-container" style="display: block; margin: 0 auto; height:25vh; width:50vw"></div>
       <br><br><br><br><br><br><br><br><br><br><br>
       <div style="display: none;" id="comment_table">
@@ -46,7 +46,12 @@ function results_view(){
               emptyPanes: ''
           }
       },
-      "bSortClasses": false
+      "bSortClasses": false,
+      dom: 'Bfrtip',
+      buttons: [{
+        extend: "csv",
+        text: 'Download Comment Data  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>'
+      }],
   });
 
 
@@ -98,7 +103,7 @@ function results_view(){
 
 
         $("#download").remove()
-        $("#dl_button").append('<div><button class="btn btn-secondary" id="download">CSV Data <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg></button><div>')
+        $("#dl_button").append('<div><button class="btn btn-secondary" id="download">Download Points Data <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg></button><div>')
 
         $("#download").click(function(){
           const csvString = [
