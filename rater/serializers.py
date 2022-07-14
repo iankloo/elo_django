@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Experiment, Results, People, Final_Results
+from .models import Experiment, Results, People, Final_Results, Comments
 from django.contrib.auth import get_user_model
 
 
@@ -24,6 +24,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ExperimentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Experiment
+		fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comments
 		fields = '__all__'
 
 

@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, NewUserSerializer
+from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, NewUserSerializer, CommentSerializer
 from .models import Experiment, Results, People, Final_Results, Comments
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -67,11 +67,19 @@ class check_comments(generics.ListAPIView):
 		return queryset
 
 
+class comments_by_exp(APIView):
+	permission_classes = (IsAuthenticated,)
 
+	def post(self, request, version):
+		exp_id = request.data.getlist('id')
+		res = Comments.objects.filter(experiment_name = exp_id[0])
 
+		#serializer acting weird so just doing it myself
+		out = []
+		for r in res:
+			out.append({'subject_name': str(r.subject_name), 'rater_name': str(r.rater_name), 'comment': str(r.comment)})
 
-
-
+		return Response(out, status = 200)
 
 
 

@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import check_comments, add_comments, CommentView, get_final_results, get_progress_byuser_internal, get_progress_internal, UserCodeView, ExperimentInternalView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, add_exp_internal, ResultsExternalView, add_results, add_people_external, add_people_internal, delete_people_internal, delete_exp_internal
+from .views import comments_by_exp, check_comments, add_comments, CommentView, get_final_results, get_progress_byuser_internal, get_progress_internal, UserCodeView, ExperimentInternalView, ExperimentView, ExperimentExternalView, ResultsView, PeopleExternalView, PeopleInternalView, add_exp_external, add_exp_internal, ResultsExternalView, add_results, add_people_external, add_people_internal, delete_people_internal, delete_exp_internal
 
 
 urlpatterns = [
@@ -23,5 +23,6 @@ urlpatterns = [
     path('get_progress_internal/', get_progress_internal.as_view(), name = 'get_progress_internal'),
     path('get_progress_byuser_internal/', get_progress_byuser_internal.as_view(), name = 'get_progress_byuser_internal'),
     path('get_final_results/', get_final_results.as_view(), name = 'get_final_results'),
-    path('check_comments/', check_comments.as_view(), name = 'check_comments')
+    path('check_comments/', check_comments.as_view(), name = 'check_comments'),
+    path('comments_by_exp/', comments_by_exp.as_view(), name = 'comments_by_exp')
 ]
