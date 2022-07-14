@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, NewUserSerializer
-from .models import Experiment, Results, People, Final_Results
+from .models import Experiment, Results, People, Final_Results, Comments
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,6 +54,24 @@ def get_elo_scores(exp_id, num_runs = 500):
     avg_scores.reset_index(drop = False, inplace = True)
     
     return(avg_scores)
+
+
+class check_comments(generics.ListAPIView):
+	serializer_class = ExperimentSerializer
+
+	def get_queryset(self):
+		queryset = Experiment.objects.all()
+		res = Results.objects.filter(uuid = self.request.query_params.get('uuid', None))
+		queryset = queryset.filter(id = res[0].experiment_name.id)
+
+		return queryset
+
+
+
+
+
+
+
 
 
 

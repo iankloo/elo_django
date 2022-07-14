@@ -111,6 +111,9 @@ class Comments(models.Model):
 	subject_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='subject_name')
 	comment = models.TextField(max_length = 500)
 
+	def __str__(self):
+		return str(self.rater_name) + " commenting on " + str(self.subject_name) + " in experiment: " + str(self.experiment_name)
+
 	class Meta:
 			verbose_name_plural = "comments"
 

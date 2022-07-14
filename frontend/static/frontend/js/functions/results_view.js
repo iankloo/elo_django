@@ -16,8 +16,7 @@ function results_view(){
       <br>
       <div id="dl_button" style="float:right;"></div>
       <div class="chart-container" style="display: block; margin: 0 auto; height:25vh; width:50vw"></div>
-      
-
+      <br><br><br>
 
     <div id="overlay">
       <div class = 'overlay_text'>Please wait, this could take a minute...</div>

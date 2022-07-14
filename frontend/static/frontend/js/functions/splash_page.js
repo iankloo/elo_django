@@ -31,26 +31,51 @@ function splash_page(){
     $('#alert-blank').hide()
     $('#alert-invalid').hide()
 
+    //we have a password provided...
     if($("#password").val().length > 0){
-
+      //check if need to do more pairwise ratings
       $.ajax({
         url: 'api/v1/res?uuid=' + $("#password").val(),
         type: "GET",
         dataType: "json",
         success: function (data){
-          //determine if we should go to comments instead
-          $.ajax({
-            url: 'api/v1/exp?exp_id=' + data[0].experiment_name,
-            type: "GET",
-            dataType: "json",
-            success: function(data2){
-              if(data2[0].make_comments == true & data2[0].comments_at_end == false){
-                comment_view(data[0].experiment_name)
-              } else{
-                update_pair($("#password").val())
+          //no more pairwise...
+          if(data.length == 0){
+            //check if comments needed
+            $.ajax({
+              url: 'api/v1/check_comments?uuid=' + $("#password").val(),
+              type: "GET",
+              dataType: "json",
+              success: function(data3){
+                if(data3[0].comments_at_end == true){
+                  comment_view($("#password").val(), data3[0].comments_required)
+                } else{
+                  $('#overlay').fadeOut()
+                  $('.main').html(`
+                    <div class = 'content'>
+                      <h2>Your ratings have been captured - thank you!</h2>
+                    </div>
+                  `)
+                }
               }
-            }
-          })
+            })
+
+            
+          } else{
+            //determine if we should go to comments instead
+            $.ajax({
+              url: 'api/v1/exp?exp_id=' + data[0].experiment_name,
+              type: "GET",
+              dataType: "json",
+              success: function(data2){
+                if(data2[0].make_comments == true & data2[0].comments_at_end == false){
+                  comment_view($("#password").val(), data2[0].comments_required)
+                } else{
+                  update_pair($("#password").val())
+                }
+              }
+            })
+          }
         },
         error: function(){
           $('#overlay').fadeOut()
