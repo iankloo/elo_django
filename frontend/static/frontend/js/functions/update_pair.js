@@ -6,14 +6,45 @@ function update_pair(access_code){
     dataType: "json",
 
     success: function (data){
-
       if(data.length == 0){
         $('#overlay').fadeOut()
-          $('.main').html(`
-            <div class = 'content'>
-              <h2>Your ratings have been captured - thank you!</h2>
-            </div>
-          `)
+        //check if comments needed
+        $.ajax({
+          url: 'api/v1/check_comments?uuid=' + access_code,
+          type: "GET",
+          dataType: "json",
+          success: function(data3){
+            if(data3[0].comments_at_end == true){
+              //OK, comments are supposed to come at end, but need to make we didn't already finish them
+              //this avoids an inifinte loop of passing between pairwise and comment functions...i acknowledge it is a bit annoying
+              $.ajax({
+                url: 'api/v1/comments?uuid=' + access_code,
+                type: "GET",
+                dataType: "json",
+                success: function (data4){
+                  //this means you're done
+                  if(data4.length == 0){
+                    $('#overlay').fadeOut()
+                    $('.main').html(`
+                      <div class = 'content'>
+                        <h2>Your ratings have been captured - thank you!</h2>
+                      </div>
+                    `)
+                  } else{
+                    comment_view(access_code, data3[0].comments_required)
+                  }
+                }
+              })
+            } else{
+              $('#overlay').fadeOut()
+              $('.main').html(`
+                <div class = 'content'>
+                  <h2>Your ratings have been captured - thank you!</h2>
+                </div>
+              `)
+            }
+          }
+        })
       } else{
         $('.main').html(`
           <div class = 'content' style="display: none;">

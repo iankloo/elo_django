@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
-from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, NewUserSerializer
-from .models import Experiment, Results, People, Final_Results
+from .serializers import Final_ResultsSerializer, ExperimentSerializer, ResultsSerializer, PeopleSerializer, NewUserSerializer, CommentSerializer
+from .models import Experiment, Results, People, Final_Results, Comments
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,6 +54,32 @@ def get_elo_scores(exp_id, num_runs = 500):
     avg_scores.reset_index(drop = False, inplace = True)
     
     return(avg_scores)
+
+
+class check_comments(generics.ListAPIView):
+	serializer_class = ExperimentSerializer
+
+	def get_queryset(self):
+		queryset = Experiment.objects.all()
+		res = Results.objects.filter(uuid = self.request.query_params.get('uuid', None))
+		queryset = queryset.filter(id = res[0].experiment_name.id)
+
+		return queryset
+
+
+class comments_by_exp(APIView):
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request, version):
+		exp_id = request.data.getlist('id')
+		res = Comments.objects.filter(experiment_name = exp_id[0])
+
+		#serializer acting weird so just doing it myself
+		out = []
+		for r in res:
+			out.append({'subject_name': str(r.subject_name), 'rater_name': str(r.rater_name), 'comment': str(r.comment)})
+
+		return Response(out, status = 200)
 
 
 
@@ -143,6 +169,30 @@ class add_exp_internal(APIView):
 		creator = request.data['creator']
 		names = request.data.getlist('names[]') #this is weird, but how you have to retrieve the list from AJAX
 		question = request.data['question']
+		rate_self = request.data['rate_self'] #returns 'true' or 'false'
+		if rate_self == 'true':
+			rate_self = True
+		else:
+			rate_self = False
+
+		make_comments = request.data['make_comments']
+		if make_comments == 'true':
+			make_comments = True
+		else:
+			make_comments = False
+
+		comments_at_end = request.data['comments_at_beginning']
+		if comments_at_end == 'true':
+			comments_at_end = False
+		else:
+			comments_at_end = True
+
+		comments_required = request.data['require_comments']
+		if comments_required == 'true':
+			comments_required = True
+		else:
+			comments_required = False
+
 
 		if title == '' or creator == '' or names == '' or question == '':
 			return Response(status = 201)
@@ -155,6 +205,11 @@ class add_exp_internal(APIView):
 			ex.title = title
 			ex.creator = creator
 			ex.question = question
+			ex.rate_self = rate_self
+			if make_comments == True:
+				ex.make_comments = make_comments
+				ex.comments_at_end = comments_at_end
+				ex.comments_required = comments_required
 			ex.save()
 			for p in people:
 				ex.names.add(p)
@@ -337,28 +392,28 @@ class ResultsView(generics.ListAPIView):
 		return queryset
 
 
-# class CommentView(generics.ListAPIView):
-# 	serializer_class = PeopleSerializer
+class CommentView(generics.ListAPIView):
+	serializer_class = PeopleSerializer
 
-# 	def get_queryset(self):
-# 		unique_id = self.request.query_params.get('uuid', None)
+	def get_queryset(self):
+		unique_id = self.request.query_params.get('uuid', None)
 
-# 		queryset = Results.objects.filter(uuid = unique_id)
-# 		rater = queryset[0].rater
-# 		sub = queryset[0].experiment_name
+		queryset = Results.objects.filter(uuid = unique_id)
+		rater = queryset[0].rater
+		sub = queryset[0].experiment_name
 
-# 		n1 = queryset.values_list('name_1',flat = True).distinct()
-# 		n2 = queryset.values_list('name_2',flat = True).distinct()
+		n1 = queryset.values_list('name_1',flat = True).distinct()
+		n2 = queryset.values_list('name_2',flat = True).distinct()
 
-# 		test = set(chain(n1, n2))
-# 		again = People.objects.filter(pk__in = test)
+		test = set(chain(n1, n2))
+		again = People.objects.filter(pk__in = test)
 
-# 		already_commented = Comments.objects.filter(experiment_name = sub, rater_name = rater)
-# 		a_c_people = already_commented.values_list('subject_name')
+		already_commented = Comments.objects.filter(experiment_name = sub, rater_name = rater)
+		a_c_people = already_commented.values_list('subject_name')
 
-# 		final = again.exclude(pk__in = a_c_people)
+		final = again.exclude(pk__in = a_c_people)
 
-# 		return final
+		return final
 
 
 @permission_classes((permissions.AllowAny,))
@@ -437,30 +492,30 @@ class add_exp_external(APIView):
 		return Response(status = 200)
 
 
-# @permission_classes((permissions.AllowAny,))
-# class add_comments(APIView):
-# 	def post(self, request, version):
+@permission_classes((permissions.AllowAny,))
+class add_comments(APIView):
+	def post(self, request, version):
 
-# 		uuid = request.POST['uuid']
-# 		#rater_id = request.POST['rater_id']
-# 		subject_id = request.POST['subject_id']
-# 		comment = request.POST['comment']
+		uuid = request.POST['uuid']
+		#rater_id = request.POST['rater_id']
+		subject_id = request.POST['subject_id']
+		comment = request.POST['comment']
 
-# 		r = Results.objects.filter(uuid = uuid)
+		r = Results.objects.filter(uuid = uuid)
 
-# 		#p = People.objects.get(pk = r[0].rater)
-# 		e = r[0].experiment_name
-# 		rater = r[0].rater
+		#p = People.objects.get(pk = r[0].rater)
+		e = r[0].experiment_name
+		rater = r[0].rater
 
-# 		subject = People.objects.get(pk = subject_id)
+		subject = People.objects.get(pk = subject_id)
 
-# 		com = Comments()
-# 		com.experiment_name = e
-# 		com.rater_name = rater
-# 		com.subject_name = subject
-# 		com.comment = comment
+		com = Comments()
+		com.experiment_name = e
+		com.rater_name = rater
+		com.subject_name = subject
+		com.comment = comment
 
-# 		com.save()
+		com.save()
 
-# 		return Response(status = 200)
+		return Response(status = 200)
 

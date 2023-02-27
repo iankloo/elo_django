@@ -93,26 +93,6 @@ function update_pair(access_code){
 
             //set matches remaining counter
             $('#num_left').text('Matches Remaining: ' + data.length)
-
-            //handle arrow keys - just automate clicking process
-            $(document).keydown(function(e) {
-              switch(e.which) {
-                case 37: // left
-                  $('#name1_card').click()
-                break;
-
-                case 38: // up
-                break;
-
-                case 39: // right
-                  $('#name2_card').click()
-                break;
-
-                default: return; // exit this handler for other keys
-              }
-
-              e.preventDefault(); // prevent the default action (scroll / move caret)
-            });
           }
         })
       }

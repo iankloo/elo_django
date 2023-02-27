@@ -22,6 +22,10 @@ class Experiment(models.Model):
 	)
 	question = models.CharField(max_length = 200)
 	per_complete = models.CharField(blank = True, null = True, default = 0, max_length = 30)
+	rate_self = models.BooleanField(default = False)
+	make_comments = models.BooleanField(default = False)
+	comments_at_end = models.BooleanField(default = False)
+	comments_required = models.BooleanField(default = False)
 
 	def __str__(self):
 		return self.title + " - " + str(self.date)
@@ -101,8 +105,21 @@ class Results(models.Model):
 		verbose_name_plural = "results"
 
 
-#when experiment is added, create pairwise comparisons and wntries to Results table
+class Comments(models.Model):
+	experiment_name = models.ForeignKey(Experiment, on_delete = models.CASCADE)
+	rater_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='rater_name')
+	subject_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='subject_name')
+	comment = models.TextField(max_length = 500)
 
+	def __str__(self):
+		return str(self.rater_name) + " commenting on " + str(self.subject_name) + " in experiment: " + str(self.experiment_name)
+
+	class Meta:
+			verbose_name_plural = "comments"
+
+
+
+#when experiment is added, create pairwise comparisons and wntries to Results table
 #this one works from admin, but not from API
 #@receiver(m2m_changed, sender = Experiment.names.through)
 #this one works from API, but not admin
@@ -112,35 +129,44 @@ def build_pairwise_shell(sender, **kwargs):
 	instance = kwargs.pop('instance', None)
 	exp = Experiment.objects.get(pk = instance.pk)
 
-	n = exp.names.all()
-	pairs = list(itertools.combinations(n, 2))
-	if(pairs != []):
-		for name in n:
-			#filter to everyone that isn't you
-			test = [p for p in pairs if name not in p]
-			my_uuid = uuid.uuid4()
+	if exp.rate_self == False:
+		n = exp.names.all()
+		pairs = list(itertools.combinations(n, 2))
+		if(pairs != []):
+			for name in n:
+				#filter to everyone that isn't you
+				test = [p for p in pairs if name not in p]
+				my_uuid = uuid.uuid4()
 
-			#add each pairwise rating
-			for t in test:
-				obj = Results()
-				obj.name_1 = t[0]
-				obj.name_2 = t[1]
-				obj.rater = name
-				obj.experiment_name = instance
-				obj.uuid = my_uuid
+				#add each pairwise rating
+				for t in test:
+					obj = Results()
+					obj.name_1 = t[0]
+					obj.name_2 = t[1]
+					obj.rater = name
+					obj.experiment_name = instance
+					obj.uuid = my_uuid
 
-				print(type(t[0]))
-				obj.save()
+					obj.save()
+	else:
+		n = exp.names.all()
+		pairs = list(itertools.combinations(n, 2))
+		if(pairs != []):
+			for name in n:
+				#filter to everyone that isn't you
+				test = [p for p in pairs]
+				my_uuid = uuid.uuid4()
 
+				#add each pairwise rating
+				for t in test:
+					obj = Results()
+					obj.name_1 = t[0]
+					obj.name_2 = t[1]
+					obj.rater = name
+					obj.experiment_name = instance
+					obj.uuid = my_uuid
 
-#not using these currently...
-# class Comments(models.Model):
-# 	experiment_name = models.ForeignKey(Experiment, on_delete = models.CASCADE)
-# 	rater_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='rater_name')
-# 	subject_name = models.ForeignKey(People, on_delete = models.CASCADE, related_name='subject_name')
-# 	comment = models.TextField(max_length = 500)
+					obj.save()
 
-# 	class Meta:
-# 			verbose_name_plural = "comments"
 
 

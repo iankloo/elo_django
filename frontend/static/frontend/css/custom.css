@@ -216,3 +216,13 @@ h5{
   font-weight: bold;
   font-size: 2em;
 }
+
+.dt-button{
+  color: #fff !important;
+  background: none !important;
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  font-weight: 400 !important;
+  border-radius: .25rem !important;
+  font-size: 1em !important;
+}

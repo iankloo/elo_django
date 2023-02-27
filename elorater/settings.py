@@ -28,7 +28,7 @@ SECRET_KEY = 'sxc1h5*i*ym6we$$2z1i#xh=%xoeesq@rm%pb9m(1smnje#6l8'
 # print(get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -88,14 +88,26 @@ WSGI_APPLICATION = 'elorater.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 #local
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+#postgres - for use in Docker deployment
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": 5432,  # default postgres port
     }
 }
 
-
+#azure
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'mssql',
